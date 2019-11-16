@@ -47,11 +47,8 @@ struct SelectedGrid: View {
                     self.viewModel.tapped(point)
                 }.background(Color.clear)
                 
-                ForEach(self.viewModel.visitedDisplay1) { hex in
-                    HexView(hex, c: Color.visited1)
-                }
-                ForEach(self.viewModel.visitedDisplay2) { hex in
-                    HexView(hex, c: Color.visited2)
+                ForEach(self.viewModel.visitedDisplay) { hexDisplay in
+                    HexView(hexDisplay.data, c: hexDisplay.color)
                 }
                 
                 ForEach(Array(self.viewModel.selectedLocation)) { hex in
@@ -59,7 +56,7 @@ struct SelectedGrid: View {
                 }
                 
                 ForEach(self.viewModel.checkingItems) { hex in
-                    HexView(hex, c: Color.checking).opacity(0.6)
+                    HexView(hex, c: Color.checking)
                 }
                 
                 ForEach(self.viewModel.collisonItems) { hex in
@@ -109,7 +106,9 @@ struct HexView : View {
             }.fill(self.color)
             
             Text("\(hex.weight)")
-                .font(.system(size: 9)).foregroundColor(.white)
+                .font(.system(size: 10))
+                .bold()
+                .foregroundColor(.white)
                 .position(x: hex.corners.first!.x - Global.layout.size.width / 2, y: hex.corners.first!.y - Global.layout.size.height / 2)
         }
         

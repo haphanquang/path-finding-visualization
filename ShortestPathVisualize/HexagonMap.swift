@@ -35,7 +35,7 @@ struct Hex : Equatable, Hashable, Identifiable{
     }
     
     var corners: [Point] = []
-    let weight: Int = 1//Int.random(in: 1...99)
+    let weight: Int = Int.random(in: 1...99)
     
     static let directions = [
         Hex(q: 1, r: 0, s: -1),
@@ -85,10 +85,13 @@ struct Hex : Equatable, Hashable, Identifiable{
         self.corners = layout.getPolygonCorners(hex: self).map { Point(x: $0.x, y: $0.y) }
     }
     
-    func allNeighbors() -> Set<Hex> {
+    func allNeighbors(_ map: Map) -> Set<Hex> {
         var result: Set<Hex> = Set()
         for i in 0...5 {
-            result.insert(Hex.neighbor(self, direction: i))
+            let neightbor = Hex.neighbor(self, direction: i)
+            if let hexInMap = map.getData(neightbor) {
+                result.insert(hexInMap)
+            }
         }
         return result
     }
@@ -123,12 +126,15 @@ struct Hex : Equatable, Hashable, Identifiable{
                    s: Hex.lerpHelper(start.s, end.s, t))
     }
     
-    static func line(_ start: Hex, _ to: Hex) -> [Hex] {
+    static func line(_ start: Hex, _ to: Hex, map: Map) -> [Hex] {
         let distance = Hex.distance(start, to)
         var results: [Hex] = []
         
         for i in 0...distance {
-            results.append(Hex.lerp(start, to, 1.0 / Double(distance) * Double(i)))
+            let lerp = Hex.lerp(start, to, 1.0 / Double(distance) * Double(i))
+            if let data = map.getData(lerp) {
+                results.append(data)
+            }
         }
         return results
     }
@@ -191,11 +197,15 @@ struct Map {
             }
         }
     }
+    
+    func getData(_ hex: Hex) -> Hex?{
+        return points.first(where: { $0 == hex })
+    }
 }
 
 
 struct Global {
-    static let layout = Layout(orientation: .pointy, size: CGSize.init(width: 15, height: 15), origin: .zero)
+    static let layout = Layout(orientation: .pointy, size: CGSize.init(width: 20, height: 20), origin: .zero)
 }
 
 struct Point : Hashable {
@@ -210,12 +220,17 @@ extension CGPoint {
         return CGPoint(x: x + layout.origin.x, y: y + layout.origin.y)
     }
     
-    func pixelToHex(_ layout: Layout) -> Hex {
+    func pixelToHex(_ layout: Layout, map: Map) -> Hex {
         let orientation = layout.orientation
         let point = CGPoint(x: (self.x - layout.origin.x) / layout.size.width
                             , y: (self.y - layout.origin.y) / layout.size.height)
         let q = orientation.b0 * Double(point.x) + orientation.b1 * Double(point.y)
         let r = orientation.b2 * Double(point.x) + orientation.b3 * Double(point.y)
-        return Hex(q: q, r: r)
+        let hex = Hex(q: q, r: r)
+        if let data = map.getData(hex) {
+            return data
+        }else{
+            return hex
+        }
     }
 }
