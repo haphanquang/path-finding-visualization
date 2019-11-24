@@ -9,10 +9,16 @@
 import Foundation
 import SwiftUI
 
-struct ShortestPath {
+class PathWay {
+    var prevPath: PathWay? = nil
     var point: Hex
-    var prev: Hex?
     var totalWeightToReach: Int
+    
+    init(point: Hex, prevPath: PathWay?, totalWeight: Int) {
+        self.point = point
+        self.prevPath = prevPath
+        self.totalWeightToReach = totalWeight
+    }
 }
 
 extension SelectedGridViewModel {
@@ -26,25 +32,24 @@ extension SelectedGridViewModel {
         let start = location.first!
         let target = location.last!
         
-        var priorityQueue = PriorityQueue(elements: [ShortestPath(point: start, prev: nil, totalWeightToReach: 0)], priorityFunction: { $0.totalWeightToReach < $1.totalWeightToReach })
+        var priorityQueue = PriorityQueue(elements: [PathWay(point: start, prevPath: nil, totalWeight: 0)], priorityFunction: { $0.totalWeightToReach < $1.totalWeightToReach })
         
         var visited: [Hex] = []
         
         self.timer = DispatchSource.makeTimerSource()
-        self.timer?.schedule(deadline: .now(), repeating: 0.05)
+        self.timer?.schedule(deadline: .now(), repeating: 0.1)
         self.timer?.setEventHandler { [weak self] in
             guard let `self` = self else { return }
-            
-            if priorityQueue.isEmpty {
-                self.finished(visited)
-                return
-            }
             
             let checkpoint = priorityQueue.dequeue()!
             visited.append(checkpoint.point)
             
+            DispatchQueue.main.async {
+                self.visitedDisplay = Array(visited.map { HexDisplay($0, .visited2) })
+            }
+            
             if checkpoint.point == target {
-                self.finished(visited)
+                self.finished(self.getGetPathWay(checkpoint))
                 return
             }
             
@@ -52,25 +57,43 @@ extension SelectedGridViewModel {
                 if visited.contains(neighbor) {
                     continue
                 }
-                let weight = checkpoint.point.weight + neighbor.weight
-                let pathToNeighbor = ShortestPath(point: neighbor, prev: checkpoint.point, totalWeightToReach: weight)
+                
+                let weight = checkpoint.totalWeightToReach + neighbor.weight
+                let pathToNeighbor = PathWay(point: neighbor, prevPath: checkpoint, totalWeight: weight)
                 priorityQueue.enqueue(pathToNeighbor)
+                
+                if neighbor == target {
+                    self.finished(self.getGetPathWay(pathToNeighbor))
+                    return
+                }
             }
             
-            DispatchQueue.main.async {
-                self.visitedDisplay = Array(visited.map { HexDisplay($0, .visited2) })
+            if priorityQueue.isEmpty {
+                self.finished(self.getGetPathWay(checkpoint))
+                return
             }
-            
         }
         self.timer?.resume()
     }
     
     func finished(_ path: [Hex]) {
+        print(path.count)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.fixedPaths = [path]
+            let a = Array(path.dropFirst().dropLast())
+            self.fixedPaths = [a]
         }
         
         self.timer?.cancel()
         self.timer = nil
+    }
+    
+    func getGetPathWay(_ path: PathWay) -> [Hex] {
+        var result = [path.point]
+        var prev = path.prevPath
+        while prev != nil {
+            result.append(prev!.point)
+            prev = prev?.prevPath
+        }
+        return result
     }
 }

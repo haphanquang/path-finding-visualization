@@ -178,6 +178,7 @@ struct TapListenerView: UIViewRepresentable {
 
 extension Color {
     static let normal = Color.white
+    
     static let visited1 = Color(red: 0.4, green: 0.9, blue: 0.4)
     static let visited2 = Color(red: 0.4, green: 0.7, blue: 0.4)
     
@@ -186,5 +187,5 @@ extension Color {
     static let checking = Color(red: 0.4, green: 0.4, blue: 1.0)
     static let collision = Color(red: 0.7, green: 0.4, blue: 0.4)
     
-    static let path = Color(red: 0.6, green: 0.4, blue: 0.6)
+    static let path = Color.green
 }
