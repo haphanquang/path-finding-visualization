@@ -18,29 +18,34 @@ struct ShortestPath {
 extension SelectedGridViewModel {
     
     func animateFindingPath() {
-        self.timer = DispatchSource.makeTimerSource()
-        self.timer?.schedule(deadline: .now(), repeating: 0.25)
-        self.timer?.setEventHandler { [weak self] in
-            
-        }
-        self.timer?.resume()
+       
     }
     
     func findPath() {
-        let location = Array(self.selectedLocation)
+        let location = self.selectedLocation
         let start = location.first!
         let target = location.last!
+        
         var priorityQueue = PriorityQueue(elements: [ShortestPath(point: start, prev: nil, totalWeightToReach: 0)], priorityFunction: { $0.totalWeightToReach < $1.totalWeightToReach })
-    
+        
         var visited: [Hex] = []
         
-        while !priorityQueue.isEmpty {
-            let checkpoint = priorityQueue.dequeue()!
+        self.timer = DispatchSource.makeTimerSource()
+        self.timer?.schedule(deadline: .now(), repeating: 0.05)
+        self.timer?.setEventHandler { [weak self] in
+            guard let `self` = self else { return }
             
+            if priorityQueue.isEmpty {
+                self.finished(visited)
+                return
+            }
+            
+            let checkpoint = priorityQueue.dequeue()!
             visited.append(checkpoint.point)
             
             if checkpoint.point == target {
-                break
+                self.finished(visited)
+                return
             }
             
             for neighbor in checkpoint.point.allNeighbors(self.gridData) {
@@ -49,12 +54,15 @@ extension SelectedGridViewModel {
                 }
                 let weight = checkpoint.point.weight + neighbor.weight
                 let pathToNeighbor = ShortestPath(point: neighbor, prev: checkpoint.point, totalWeightToReach: weight)
-                
                 priorityQueue.enqueue(pathToNeighbor)
             }
+            
+            DispatchQueue.main.async {
+                self.visitedDisplay = Array(visited.map { HexDisplay($0, .visited2) })
+            }
+            
         }
-        
-        finished(visited)
+        self.timer?.resume()
     }
     
     func finished(_ path: [Hex]) {

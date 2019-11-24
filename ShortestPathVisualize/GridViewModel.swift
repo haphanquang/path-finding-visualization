@@ -26,8 +26,9 @@ struct HexDisplay : Identifiable{
 class SelectedGridViewModel : ObservableObject {
     @Published var gridData = Map(height: 0, width: 0, origin: .zero)
     
-    @Published var selectedLocation: Set<Hex> = Set()
+    @Published var selectedLocation: [Hex] = []
     @Published var visitedDisplay: [HexDisplay] = []
+    @Published var neighborVisitedDisplay: [HexDisplay] = []
     
     @Published var checkingItems: [Hex] = []
     @Published var collisonItems: [Hex] = []
@@ -54,7 +55,7 @@ class SelectedGridViewModel : ObservableObject {
             return
         }
         
-        self.selectedLocation.insert(point.pixelToHex(Global.layout, map: self.gridData))
+        self.selectedLocation.append(point.pixelToHex(Global.layout, map: self.gridData))
         
         if self.selectedLocation.count == 2 {
 //            findPathBidirectional()

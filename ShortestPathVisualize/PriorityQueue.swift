@@ -78,6 +78,9 @@ struct Heap<Element> {
         if el2 == nil && el1 != nil {
             return true
         }
+        if el2 == nil && el1 == nil {
+            return false
+        }
         return priorityFunction(el1!, el2!)
     }
     

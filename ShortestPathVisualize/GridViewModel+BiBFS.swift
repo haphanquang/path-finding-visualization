@@ -16,7 +16,7 @@ extension SelectedGridViewModel {
     }
     
     func findPathBidirectional () {
-        let startPoints = Array(self.selectedLocation)
+        let startPoints = self.selectedLocation
         var queue1 = [startPoints.first!]
         var queue2 = [startPoints.last!]
         

@@ -9,11 +9,12 @@
 import SwiftUI
 
 struct ContentView: View {
+    let viewModel = SelectedGridViewModel()
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .bottom) {
-                SelectedGrid(SelectedGridViewModel())
-//                Grid().disabled(true)
+                SelectedGrid(self.viewModel)
+//                Grid(self.viewModel).disabled(true)
             }
         }
     }

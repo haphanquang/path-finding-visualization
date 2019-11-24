@@ -10,24 +10,23 @@ import Foundation
 import SwiftUI
 
 
+
 struct Grid: View {
-    @State var gridData = Map(height: 0, width: 0, origin: .zero)
+    @ObservedObject var viewModel: SelectedGridViewModel
+    
+    init(_ vm: SelectedGridViewModel) {
+        viewModel = vm
+    }
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Path { path in
-                    for hex in self.gridData.points {
-                        let allPoints = hex.corners.map { CGPoint(x: $0.x, y: $0.y) }
-                        path.move(to: allPoints.first!)
-                        for point in allPoints {
-                            path.addLine(to: point)
-                        }
-                    }
+                ForEach(Array(self.viewModel.gridData.points)) { hex in
+                    HexEmptyView(hex, c: .gray)
                 }
-                .stroke(lineWidth: 0.5)
-                .stroke(Color.gray)
+                
             }.onAppear {
-                self.gridData = Map(size: geometry.frame(in: .global).size, origin: .zero)
+                self.viewModel.gridData = Map(size: geometry.frame(in: .global).size, origin: .zero)
             }
         }
     }
@@ -51,7 +50,7 @@ struct SelectedGrid: View {
                     HexView(hexDisplay.data, c: hexDisplay.color)
                 }
                 
-                ForEach(Array(self.viewModel.selectedLocation)) { hex in
+                ForEach(self.viewModel.selectedLocation) { hex in
                     HexView(hex)
                 }
                 
@@ -77,7 +76,6 @@ struct SelectedGrid: View {
                     }
                     
                 }.padding()
-                
             }.onAppear {
                 self.viewModel.gridData = Map(size: geometry.frame(in: .global).size, origin: .zero)
             }
@@ -104,6 +102,36 @@ struct HexView : View {
                 }
                 
             }.fill(self.color)
+            
+            Text("\(hex.weight)")
+                .font(.system(size: 10))
+                .bold()
+                .foregroundColor(.white)
+                .position(x: hex.corners.first!.x - Global.layout.size.width / 2, y: hex.corners.first!.y - Global.layout.size.height / 2)
+        }
+        
+    }
+}
+
+struct HexEmptyView : View {
+    var hex: Hex
+    var color: Color
+    
+    init(_ h: Hex, c: Color = .selected) {
+        hex = h
+        color = c
+    }
+    
+    var body: some View {
+        ZStack {
+            Path { path in
+                let allPoints = hex.corners.map { CGPoint(x: $0.x, y: $0.y) }
+                path.move(to: allPoints.first!)
+                for point in allPoints {
+                    path.addLine(to: point)
+                }
+                
+            }.stroke(self.color)
             
             Text("\(hex.weight)")
                 .font(.system(size: 10))
