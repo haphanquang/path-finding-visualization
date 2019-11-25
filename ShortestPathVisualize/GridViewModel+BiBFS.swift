@@ -24,7 +24,7 @@ extension SelectedGridViewModel {
         var visited2: Set<Hex> = Set()
         
         self.timer = DispatchSource.makeTimerSource()
-        self.timer?.schedule(deadline: .now(), repeating: 0.25)
+        self.timer?.schedule(deadline: .now(), repeating: stepTime)
         self.timer?.setEventHandler { [weak self] in
             
             DispatchQueue.main.async { [weak self] in
@@ -39,7 +39,7 @@ extension SelectedGridViewModel {
                     
                     if finished == true {
                         
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                             
                             let first = self.collisonItems.first!
                             let last = self.collisonItems.last!

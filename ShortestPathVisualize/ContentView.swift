@@ -9,12 +9,22 @@
 import SwiftUI
 
 struct ContentView: View {
-    let viewModel = SelectedGridViewModel()
+    @ObservedObject var viewModel = SelectedGridViewModel()
+    
     var body: some View {
         GeometryReader { geometry in
-            ZStack(alignment: .bottom) {
+            ZStack(alignment: .top) {
                 SelectedGrid(self.viewModel)
-//                Grid(self.viewModel).disabled(true)
+            
+                VStack (alignment: .trailing) {
+                    Picker("Algo", selection: self.$viewModel.algo) {
+                        Text("BiBFS").tag(0)
+                        Text("Dijkstra").tag(1)
+                    }.pickerStyle(SegmentedPickerStyle())
+                    .frame(width: 200, height: 35, alignment: .trailing)
+                    .padding()
+                }
+                
             }
         }
     }

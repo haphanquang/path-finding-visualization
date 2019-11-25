@@ -21,31 +21,46 @@ class PathWay {
     }
 }
 
+extension PathWay: Equatable {
+    static func == (lhs: PathWay, rhs: PathWay) -> Bool {
+        return lhs.point == rhs.point
+    }
+
+}
+
 extension SelectedGridViewModel {
     
-    func animateFindingPath() {
-       
-    }
-    
-    func findPath() {
+    func findPathDijkstra() {
         let location = self.selectedLocation
         let start = location.first!
         let target = location.last!
         
         var priorityQueue = PriorityQueue(elements: [PathWay(point: start, prevPath: nil, totalWeight: 0)], priorityFunction: { $0.totalWeightToReach < $1.totalWeightToReach })
         
-        var visited: [Hex] = []
+        var visited: Set<Hex> = Set()
+        var willVisited: Set<Hex> = Set()
         
         self.timer = DispatchSource.makeTimerSource()
-        self.timer?.schedule(deadline: .now(), repeating: 0.1)
+        self.timer?.schedule(deadline: .now(), repeating: stepTime)
         self.timer?.setEventHandler { [weak self] in
             guard let `self` = self else { return }
             
             let checkpoint = priorityQueue.dequeue()!
-            visited.append(checkpoint.point)
+            
+            visited.insert(checkpoint.point)
+            willVisited.remove(checkpoint.point)
+            
+            //Todo: Ignore visited ???
+            
+            DispatchQueue.main.async { [weak self] in
+                withAnimation {
+                    self?.checkingItems = [checkpoint.point]
+                    self?.visitedDisplay = visited.map { HexDisplay($0, .visited2) }
+                }
+            }
             
             DispatchQueue.main.async {
-                self.visitedDisplay = Array(visited.map { HexDisplay($0, .visited2) })
+                
             }
             
             if checkpoint.point == target {
@@ -53,19 +68,27 @@ extension SelectedGridViewModel {
                 return
             }
             
+            
             for neighbor in checkpoint.point.allNeighbors(self.gridData) {
-                if visited.contains(neighbor) {
+                if visited.contains(neighbor) || willVisited.contains(neighbor) {
                     continue
                 }
                 
+                willVisited.insert(neighbor)
+                
                 let weight = checkpoint.totalWeightToReach + neighbor.weight
                 let pathToNeighbor = PathWay(point: neighbor, prevPath: checkpoint, totalWeight: weight)
+                
                 priorityQueue.enqueue(pathToNeighbor)
                 
                 if neighbor == target {
                     self.finished(self.getGetPathWay(pathToNeighbor))
                     return
                 }
+            }
+            
+            DispatchQueue.main.async {
+                self.willVisitedDisplay = Array(willVisited)
             }
             
             if priorityQueue.isEmpty {
@@ -77,10 +100,12 @@ extension SelectedGridViewModel {
     }
     
     func finished(_ path: [Hex]) {
-        print(path.count)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            let a = Array(path.dropFirst().dropLast())
-            self.fixedPaths = [a]
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            withAnimation {
+                let a = Array(path.dropFirst().dropLast())
+                self?.fixedPaths = [a]
+            }
+            
         }
         
         self.timer?.cancel()
@@ -95,5 +120,9 @@ extension SelectedGridViewModel {
             prev = prev?.prevPath
         }
         return result
+    }
+    
+    func addVisitedNeighbor(_ point: Hex, path: PathWay) {
+        
     }
 }

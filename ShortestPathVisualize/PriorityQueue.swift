@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct PriorityQueue<Element> {
+struct PriorityQueue<Element: Equatable> {
     var heap: Heap<Element>
     
     var isEmpty: Bool {
@@ -31,9 +31,13 @@ struct PriorityQueue<Element> {
         return heap.dequeue()
     }
     
+    mutating func peek() -> Element? {
+        return heap.peek()
+    }
+    
 }
 
-struct Heap<Element> {
+struct Heap<Element: Equatable> {
     var elements: [Element]
     let priorityFunction: (Element, Element) -> Bool
     
@@ -127,9 +131,19 @@ struct Heap<Element> {
     
     //Queue function
     mutating func enqueue(_ element: Element) {
+        //customize
+//        for i in 0..<self.elements.count {
+//            if self.elements[i] == element && priorityFunction(element, self.elements[i]) {
+//                self.elements[i] = element
+//                siftUp(at: i)
+//                return
+//            }
+//        }
+        
         elements.append(element)
         siftUp(at: count - 1)
     }
+    
     mutating func dequeue() -> Element? {
         guard !isEmpty else { return nil }
         swap(at: 0, with: count - 1)
@@ -138,5 +152,9 @@ struct Heap<Element> {
             siftDown(at: 0)
         }
         return ele
+    }
+    
+    mutating func peek() -> Element? {
+        return elements.first
     }
  }

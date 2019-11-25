@@ -24,11 +24,13 @@ struct HexDisplay : Identifiable{
 }
 
 class SelectedGridViewModel : ObservableObject {
+    @Published var algo: Int = 0
     @Published var gridData = Map(height: 0, width: 0, origin: .zero)
     
-    @Published var selectedLocation: [Hex] = []
+    @Published var willVisitedDisplay: [Hex] = []
     @Published var visitedDisplay: [HexDisplay] = []
-    @Published var neighborVisitedDisplay: [HexDisplay] = []
+    
+    @Published var selectedLocation: [Hex] = []
     
     @Published var checkingItems: [Hex] = []
     @Published var collisonItems: [Hex] = []
@@ -36,6 +38,7 @@ class SelectedGridViewModel : ObservableObject {
     @Published var fixedPaths: [[Hex]] = []
     
     var timer: DispatchSourceTimer?
+    let stepTime: DispatchTimeInterval = .milliseconds(300)
     
     func transform() {
         
@@ -44,22 +47,27 @@ class SelectedGridViewModel : ObservableObject {
     func tapped(_ point: CGPoint) {
         if self.selectedLocation.count == 2 {
             
+            timer?.cancel()
+            timer = nil
+            
             self.selectedLocation.removeAll()
             self.visitedDisplay.removeAll()
+            self.willVisitedDisplay.removeAll()
             self.checkingItems.removeAll()
             self.collisonItems.removeAll()
             self.fixedPaths.removeAll()
-            
-            timer?.cancel()
-            timer = nil
+        
             return
         }
         
         self.selectedLocation.append(point.pixelToHex(Global.layout, map: self.gridData))
         
         if self.selectedLocation.count == 2 {
-//            findPathBidirectional()
-            findPath()
+            if algo == 0  {
+                findPathBidirectional()
+            }else {
+                findPathDijkstra()
+            }
         }
     }
 

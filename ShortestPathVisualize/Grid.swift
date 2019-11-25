@@ -50,6 +50,10 @@ struct SelectedGrid: View {
                     HexView(hexDisplay.data, c: hexDisplay.color)
                 }
                 
+                ForEach(self.viewModel.willVisitedDisplay) { hex in
+                    HexView(hex, c: Color.willVisit)
+                }
+                
                 ForEach(self.viewModel.selectedLocation) { hex in
                     HexView(hex)
                 }
@@ -63,7 +67,7 @@ struct SelectedGrid: View {
                 }
                 
                 ForEach(self.viewModel.fixedPaths.reduce([], +)) { hex in
-                    HexView(hex, c: Color.path)
+                    HexView(hex, c: Color.finalPath)
                 }
                 
                 HStack {
@@ -179,13 +183,14 @@ struct TapListenerView: UIViewRepresentable {
 extension Color {
     static let normal = Color.white
     
-    static let visited1 = Color(red: 0.4, green: 0.9, blue: 0.4)
-    static let visited2 = Color(red: 0.4, green: 0.7, blue: 0.4)
+    static let visited1 = Color(red: 0.5, green: 0.4, blue: 0.5)
+    static let visited2 = Color(red: 0.3, green: 0.9, blue: 0.3)
+    static let willVisit = Color(red: 0.7, green: 0.7, blue: 0.7)
     
     static let selected = Color(red: 0.3, green: 0.6, blue: 0.3)
     
     static let checking = Color(red: 0.4, green: 0.4, blue: 1.0)
     static let collision = Color(red: 0.7, green: 0.4, blue: 0.4)
     
-    static let path = Color.green
+    static let finalPath = Color.blue
 }
