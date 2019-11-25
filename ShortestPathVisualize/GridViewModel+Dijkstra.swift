@@ -35,13 +35,13 @@ extension SelectedGridViewModel {
         let start = location.first!
         let target = location.last!
         
-        var priorityQueue = PriorityQueue(elements: [PathWay(point: start, prevPath: nil, totalWeight: 0)], priorityFunction: { $0.totalWeightToReach < $1.totalWeightToReach })
+        var priorityQueue = PriorityQueue(elements: [PathWay(point: start, prevPath: nil, totalWeight: start.weight)], priorityFunction: { $0.totalWeightToReach < $1.totalWeightToReach })
         
         var visited: Set<Hex> = Set()
         var willVisited: Set<Hex> = Set()
         
         self.timer = DispatchSource.makeTimerSource()
-        self.timer?.schedule(deadline: .now(), repeating: stepTime)
+        self.timer?.schedule(deadline: .now(), repeating: stepTimeDij)
         self.timer?.setEventHandler { [weak self] in
             guard let `self` = self else { return }
             
@@ -52,19 +52,17 @@ extension SelectedGridViewModel {
             
             //Todo: Ignore visited ???
             
-            DispatchQueue.main.async { [weak self] in
-                withAnimation {
-                    self?.checkingItems = [checkpoint.point]
-                    self?.visitedDisplay = visited.map { HexDisplay($0, .visited2) }
-                }
-            }
-            
-            DispatchQueue.main.async {
-                
+            DispatchQueue.main.async { [unowned self] in
+//                withAnimation {
+                    self.checkingItems = [checkpoint.point]
+                    self.fixedPaths = [Array(self.getGetPathWay(checkpoint).dropLast())]
+                    self.pathSum = checkpoint.totalWeightToReach
+                    self.visitedDisplay = visited.map { HexDisplay($0, .visited2) }
+//                }
             }
             
             if checkpoint.point == target {
-                self.finished(self.getGetPathWay(checkpoint))
+                self.finished(self.getGetPathWay(checkpoint), sum: [checkpoint.totalWeightToReach])
                 return
             }
             
@@ -82,7 +80,7 @@ extension SelectedGridViewModel {
                 priorityQueue.enqueue(pathToNeighbor)
                 
                 if neighbor == target {
-                    self.finished(self.getGetPathWay(pathToNeighbor))
+                    self.finished(self.getGetPathWay(pathToNeighbor), sum: [weight])
                     return
                 }
             }
@@ -92,18 +90,19 @@ extension SelectedGridViewModel {
             }
             
             if priorityQueue.isEmpty {
-                self.finished(self.getGetPathWay(checkpoint))
+                self.finished(self.getGetPathWay(checkpoint), sum: [checkpoint.totalWeightToReach])
                 return
             }
         }
         self.timer?.resume()
     }
     
-    func finished(_ path: [Hex]) {
+    func finished(_ path: [Hex], sum: [Int]) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
             withAnimation {
                 let a = Array(path.dropFirst().dropLast())
                 self?.fixedPaths = [a]
+                self?.pathSum = sum.first!
             }
             
         }

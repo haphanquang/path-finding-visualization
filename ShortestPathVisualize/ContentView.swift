@@ -16,13 +16,17 @@ struct ContentView: View {
             ZStack(alignment: .top) {
                 SelectedGrid(self.viewModel)
             
-                VStack (alignment: .trailing) {
+                VStack (alignment: .center) {
                     Picker("Algo", selection: self.$viewModel.algo) {
                         Text("BiBFS").tag(0)
                         Text("Dijkstra").tag(1)
                     }.pickerStyle(SegmentedPickerStyle())
                     .frame(width: 200, height: 35, alignment: .trailing)
                     .padding()
+                    
+                    if self.viewModel.algo == 1 {
+                        Text("\(self.viewModel.pathSum)").font(.headline).bold().frame(width: 100, height: 20, alignment: .center)
+                    }
                 }
                 
             }

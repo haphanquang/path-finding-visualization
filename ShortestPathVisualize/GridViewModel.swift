@@ -36,9 +36,12 @@ class SelectedGridViewModel : ObservableObject {
     @Published var collisonItems: [Hex] = []
     
     @Published var fixedPaths: [[Hex]] = []
+    @Published var pathSum: Int = 0
     
     var timer: DispatchSourceTimer?
-    let stepTime: DispatchTimeInterval = .milliseconds(300)
+    
+    let stepTimeDij: DispatchTimeInterval = .milliseconds(200)
+    let stepBi: DispatchTimeInterval = .milliseconds(200)
     
     func transform() {
         
@@ -56,6 +59,7 @@ class SelectedGridViewModel : ObservableObject {
             self.checkingItems.removeAll()
             self.collisonItems.removeAll()
             self.fixedPaths.removeAll()
+            self.pathSum = 0
         
             return
         }

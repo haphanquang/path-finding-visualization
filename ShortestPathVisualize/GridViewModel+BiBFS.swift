@@ -24,7 +24,7 @@ extension SelectedGridViewModel {
         var visited2: Set<Hex> = Set()
         
         self.timer = DispatchSource.makeTimerSource()
-        self.timer?.schedule(deadline: .now(), repeating: stepTime)
+        self.timer?.schedule(deadline: .now(), repeating: stepBi)
         self.timer?.setEventHandler { [weak self] in
             
             DispatchQueue.main.async { [weak self] in
