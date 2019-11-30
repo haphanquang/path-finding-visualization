@@ -39,6 +39,7 @@ extension SelectedGridViewModel {
         
         var visited: Set<Hex> = Set()
         var willVisited: Set<Hex> = Set()
+        let blocked: Set<Hex> = Set(self.blockedItems)
         
         self.timer = DispatchSource.makeTimerSource()
         self.timer?.schedule(deadline: .now(), repeating: stepTimeDij)
@@ -53,12 +54,13 @@ extension SelectedGridViewModel {
             //Todo: Ignore visited ???
             
             DispatchQueue.main.async { [unowned self] in
-//                withAnimation {
+                self.pathSum = checkpoint.totalWeightToReach
+                
+                withAnimation {
                     self.checkingItems = [checkpoint.point]
                     self.fixedPaths = [Array(self.getGetPathWay(checkpoint).dropLast())]
-                    self.pathSum = checkpoint.totalWeightToReach
                     self.visitedDisplay = visited.map { HexDisplay($0, .visited2) }
-//                }
+                }
             }
             
             if checkpoint.point == target {
@@ -68,7 +70,7 @@ extension SelectedGridViewModel {
             
             
             for neighbor in checkpoint.point.allNeighbors(self.gridData) {
-                if visited.contains(neighbor) || willVisited.contains(neighbor) {
+                if visited.contains(neighbor) || willVisited.contains(neighbor) || blocked.contains(neighbor) {
                     continue
                 }
                 

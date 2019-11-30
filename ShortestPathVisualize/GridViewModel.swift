@@ -29,6 +29,7 @@ class SelectedGridViewModel : ObservableObject {
     
     @Published var willVisitedDisplay: [Hex] = []
     @Published var visitedDisplay: [HexDisplay] = []
+    @Published var blockedItems: [Hex] = []
     
     @Published var selectedLocation: [Hex] = []
     
@@ -40,14 +41,20 @@ class SelectedGridViewModel : ObservableObject {
     
     var timer: DispatchSourceTimer?
     
-    let stepTimeDij: DispatchTimeInterval = .milliseconds(200)
-    let stepBi: DispatchTimeInterval = .milliseconds(200)
+    let stepTimeDij: DispatchTimeInterval = .milliseconds(250)
+    let stepBi: DispatchTimeInterval = .milliseconds(250)
     
     func transform() {
         
     }
     
+    
+    func blockPoint(_ point: CGPoint) {
+        self.blockedItems.append(point.pixelToHex(Global.layout, map: self.gridData))
+    }
+    
     func tapped(_ point: CGPoint) {
+        
         if self.selectedLocation.count == 2 {
             
             timer?.cancel()
@@ -58,13 +65,19 @@ class SelectedGridViewModel : ObservableObject {
             self.willVisitedDisplay.removeAll()
             self.checkingItems.removeAll()
             self.collisonItems.removeAll()
+            self.blockedItems.removeAll()
             self.fixedPaths.removeAll()
             self.pathSum = 0
         
             return
         }
         
-        self.selectedLocation.append(point.pixelToHex(Global.layout, map: self.gridData))
+        let hex = point.pixelToHex(Global.layout, map: self.gridData)
+        
+        if self.blockedItems.contains(hex) {
+            return
+        }
+        self.selectedLocation.append(hex)
         
         if self.selectedLocation.count == 2 {
             if algo == 0  {

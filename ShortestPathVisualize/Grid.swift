@@ -42,37 +42,51 @@ struct SelectedGrid: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .bottom) {
-                TapListenerView { point in
+                
+                TapListenerView(tappedCallback: { point in
                     self.viewModel.tapped(point)
-                }.background(Color.clear)
+                }, blockedCallback: { point in
+                    if self.viewModel.algo == 1 {
+                        self.viewModel.blockPoint(point)
+                    }
+                }).background(Color.clear)
                 
                 ForEach(self.viewModel.visitedDisplay) { hexDisplay in
-                    HexView(hexDisplay.data, c: hexDisplay.color)
+                    HexView(hexDisplay.data, c: hexDisplay.color, showWeight: self.viewModel.algo)
                 }
                 
                 ForEach(self.viewModel.willVisitedDisplay) { hex in
-                    HexView(hex, c: Color.willVisit)
+                    HexView(hex, c: Color.willVisit, showWeight: self.viewModel.algo)
                 }
                 
                 ForEach(self.viewModel.selectedLocation) { hex in
-                    HexView(hex)
+                    HexView(hex, c: Color.selected, showWeight: self.viewModel.algo)
                 }
                 
                 ForEach(self.viewModel.checkingItems) { hex in
-                    HexView(hex, c: Color.checking)
+                    HexView(hex, c: Color.checking, showWeight: self.viewModel.algo)
                 }
                 
                 ForEach(self.viewModel.collisonItems) { hex in
-                    HexView(hex, c: Color.collision)
+                    HexView(hex, c: Color.collision, showWeight: self.viewModel.algo)
+                }
+                
+                ForEach(self.viewModel.blockedItems) { hex in
+                    HexView(hex, c: Color.blocked, showWeight: 0)
                 }
                 
                 ForEach(self.viewModel.fixedPaths.reduce([], +)) { hex in
-                    HexView(hex, c: Color.finalPath)
+                    HexView(hex, c: Color.finalPath, showWeight: self.viewModel.algo)
                 }
                 
                 HStack {
                     if self.viewModel.selectedLocation.count == 0 {
-                        Text("Tap any point on the screen")
+                        if self.viewModel.algo == 1 {
+                            Text("Tap any point on the screen / longpress and drag to draw wall")
+                        } else{
+                            Text("Tap any point on the screen")
+                        }
+                        
                     } else if self.viewModel.selectedLocation.count == 1 {
                         Text("Tap second point to start visualization")
                     } else {
@@ -90,10 +104,12 @@ struct SelectedGrid: View {
 struct HexView : View {
     var hex: Hex
     var color: Color
+    var weightAppear: Bool
     
-    init(_ h: Hex, c: Color = .selected) {
+    init(_ h: Hex, c: Color = .selected, showWeight: Int = 0) {
         hex = h
         color = c
+        weightAppear = (showWeight == 1)
     }
     
     var body: some View {
@@ -107,11 +123,13 @@ struct HexView : View {
                 
             }.fill(self.color)
             
-            Text("\(hex.weight)")
+            if (weightAppear) {
+                Text("\(hex.weight)")
                 .font(.system(size: 10))
                 .bold()
                 .foregroundColor(.white)
                 .position(x: hex.corners.first!.x - Global.layout.size.width / 2, y: hex.corners.first!.y - Global.layout.size.height / 2)
+            }
         }
         
     }
@@ -150,28 +168,56 @@ struct HexEmptyView : View {
 struct TapListenerView: UIViewRepresentable {
     
     var tappedCallback: ((CGPoint) -> Void)
+    var blockedCallback: ((CGPoint) -> Void)
 
     func makeUIView(context: UIViewRepresentableContext<TapListenerView>) -> UIView {
         let v = UIView(frame: .zero)
-        let gesture = UITapGestureRecognizer(target: context.coordinator,
-                                             action: #selector(Coordinator.tapped))
+        
+        let gesture = UITapGestureRecognizer(target: context.coordinator
+                                            , action: #selector(Coordinator.tapped))
+        
+        let longPress = UILongPressGestureRecognizer(target: context.coordinator
+                                            , action: #selector(Coordinator.blocked))
+            
         v.addGestureRecognizer(gesture)
+        v.addGestureRecognizer(longPress)
+        
         return v
     }
 
     class Coordinator: NSObject {
         var tappedCallback: ((CGPoint) -> Void)
-        init(tappedCallback: @escaping ((CGPoint) -> Void)) {
+        var blockedCallback: ((CGPoint) -> Void)
+        
+        init(tappedCallback: @escaping ((CGPoint) -> Void), blockedCallback: @escaping ((CGPoint) -> Void)) {
             self.tappedCallback = tappedCallback
+            self.blockedCallback = blockedCallback
         }
-        @objc func tapped(gesture:UITapGestureRecognizer) {
+        
+        @objc func tapped(gesture :UITapGestureRecognizer) {
             let point = gesture.location(in: gesture.view)
             self.tappedCallback(point)
+        }
+        
+        @objc func blocked(gesture: UILongPressGestureRecognizer) {
+//            let point = gesture.location(in: gesture.view)
+//            self.blockedCallback(point)
+            if gesture.state == .began {
+                
+            } else if gesture.state == .changed {
+                guard let view = gesture.view else {
+                    return
+                }
+                let location = gesture.location(in: view)
+                self.blockedCallback(location)
+            }
+            else if gesture.state == .ended{
+            }
         }
     }
 
     func makeCoordinator() -> TapListenerView.Coordinator {
-        return Coordinator(tappedCallback:self.tappedCallback)
+        return Coordinator(tappedCallback:self.tappedCallback, blockedCallback: self.blockedCallback)
     }
 
     func updateUIView(_ uiView: UIView,
@@ -193,4 +239,5 @@ extension Color {
     static let collision = Color(red: 0.7, green: 0.4, blue: 0.4)
     
     static let finalPath = Color.blue
+    static let blocked = Color.black
 }
