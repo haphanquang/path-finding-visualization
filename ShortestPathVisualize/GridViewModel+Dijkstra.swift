@@ -28,7 +28,7 @@ extension PathWay: Equatable {
 
 }
 
-extension SelectedGridViewModel {
+extension GridViewModel {
     
     func findPathDijkstra() {
         let location = self.selectedLocation

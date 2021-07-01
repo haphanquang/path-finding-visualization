@@ -23,7 +23,7 @@ struct HexDisplay : Identifiable{
     var color: Color
 }
 
-class SelectedGridViewModel : ObservableObject {
+class GridViewModel : ObservableObject {
     @Published var algo: Int = 0
     @Published var gridData = Map(height: 0, width: 0, origin: .zero)
     

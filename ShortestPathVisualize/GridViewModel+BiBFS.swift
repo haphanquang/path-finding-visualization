@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-extension SelectedGridViewModel {
+extension GridViewModel {
     
     func addPath(_ from: Hex, to: Hex) {
         fixedPaths.append(Hex.line(from, to, map: self.gridData))
@@ -30,36 +30,23 @@ extension SelectedGridViewModel {
             DispatchQueue.main.async { [weak self] in
                 withAnimation {
                     guard let `self` = self else { return }
-                    let finished = self.bfs(queue1: &queue1, queue2: &queue2, visited1: &visited1, visited2: &visited2, checking: &self.checkingItems)
+                    
+                    let finished = self.bfsStep(
+                        queue1: &queue1,
+                        queue2: &queue2,
+                        visited1: &visited1,
+                        visited2: &visited2,
+                        checking: &self.checkingItems,
+                        collissions: &self.collisonItems,
+                        in: self.gridData
+                    )
                     
                     let vs1 = Array(visited1.map { HexDisplay($0, Color.visited1) })
                     let vs2 = Array(visited2.map { HexDisplay($0, Color.visited2) })
-                    
                     self.visitedDisplay = Array(vs1 + vs2)
                     
                     if finished == true {
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            
-                            let first = self.collisonItems.first!
-                            let last = self.collisonItems.last!
-                            
-                            let distance1 = Hex.distance(first, startPoints.first!) + Hex.distance(first, startPoints.last!)
-                            let distance2 = Hex.distance(last, startPoints.first!) + Hex.distance(last, startPoints.last!)
-                            
-                            var col: Hex
-                            if distance1 < distance2 {
-                                col = first
-                            }else{
-                                col = last
-                            }
-                            
-                            self.addPath(startPoints.first!, to: col)
-                            self.addPath(startPoints.last!, to: col)
-                        }
-                        
-                        self.timer?.cancel()
-                        self.timer = nil
+                        self.finish()
                     }
                 }
             }
@@ -68,7 +55,14 @@ extension SelectedGridViewModel {
         self.timer?.resume()
     }
     
-    func bfs(queue1: inout [Hex], queue2: inout [Hex], visited1: inout Set<Hex>, visited2: inout Set<Hex>, checking: inout [Hex]) -> Bool{
+    func bfsStep(
+        queue1: inout [Hex],
+        queue2: inout [Hex],
+        visited1: inout Set<Hex>,
+        visited2: inout Set<Hex>,
+        checking: inout [Hex],
+        collissions: inout [Hex],
+        in map: Map) -> Bool {
         
         if queue1.isEmpty || queue2.isEmpty {
             return true
@@ -89,19 +83,18 @@ extension SelectedGridViewModel {
                 return true
             }
         }
-        
-        
+            
         checking.removeAll()
         checking.append(contentsOf: [left, right])
         
         if visited1.contains(right) || visited2.contains(left) {
             checking.removeAll()
             if visited1.contains(right) && visited2.contains(left) {
-                collisonItems.append(contentsOf: [left, right])
+                collissions.append(contentsOf: [left, right])
             }else if visited1.contains(right) {
-                collisonItems.append(contentsOf: [right])
+                collissions.append(contentsOf: [right])
             }else {
-                collisonItems.append(contentsOf: [left])
+                collissions.append(contentsOf: [left])
             }
             
             return true
@@ -110,18 +103,44 @@ extension SelectedGridViewModel {
         visited1.insert(left)
         visited2.insert(right)
         
-        for neighbor in left.allNeighbors(self.gridData) {
+        for neighbor in left.allNeighbors(map) {
             if !visited1.contains(neighbor) {
                 queue1.append(neighbor)
             }
         }
         
-        for neighbor in right.allNeighbors(self.gridData) {
+        for neighbor in right.allNeighbors(map) {
             if !visited2.contains(neighbor){
                 queue2.append(neighbor)
             }
         }
         
         return false
+    }
+    
+    func finish() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            let first = self.collisonItems.first!
+            let last = self.collisonItems.last!
+            
+            let startPoint = self.selectedLocation.first!
+            let endPoint = self.selectedLocation.last!
+            
+            let distance1 = Hex.distance(first, startPoint) + Hex.distance(first, endPoint)
+            let distance2 = Hex.distance(last, startPoint) + Hex.distance(last, endPoint)
+            
+            var col: Hex
+            if distance1 < distance2 {
+                col = first
+            }else{
+                col = last
+            }
+            
+            self.addPath(startPoint, to: col)
+            self.addPath(endPoint, to: col)
+        }
+        
+        self.timer?.cancel()
+        self.timer = nil
     }
 }

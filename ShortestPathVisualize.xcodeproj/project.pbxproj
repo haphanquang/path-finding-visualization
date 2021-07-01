@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EB549EB6268DC22800317A44 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = EB549EB5268DC22800317A44 /* README.md */; };
+		EB549EB8268DC73100317A44 /* GridElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB549EB7268DC73100317A44 /* GridElement.swift */; };
 		F0451CF6237FD56F007BC51E /* GridViewModel+BiBFS.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0451CF5237FD56F007BC51E /* GridViewModel+BiBFS.swift */; };
 		F0451CF8237FD5C7007BC51E /* GridViewModel+Dijkstra.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0451CF7237FD5C7007BC51E /* GridViewModel+Dijkstra.swift */; };
 		F048AF1A237D9AB500A4F646 /* PriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = F048AF19237D9AB500A4F646 /* PriorityQueue.swift */; };
@@ -22,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EB549EB5268DC22800317A44 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		EB549EB7268DC73100317A44 /* GridElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridElement.swift; sourceTree = "<group>"; };
 		F0451CF5237FD56F007BC51E /* GridViewModel+BiBFS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GridViewModel+BiBFS.swift"; sourceTree = "<group>"; };
 		F0451CF7237FD5C7007BC51E /* GridViewModel+Dijkstra.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GridViewModel+Dijkstra.swift"; sourceTree = "<group>"; };
 		F048AF19237D9AB500A4F646 /* PriorityQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityQueue.swift; sourceTree = "<group>"; };
@@ -52,6 +56,7 @@
 		F0C30735237AF25800BD2DEB = {
 			isa = PBXGroup;
 			children = (
+				EB549EB5268DC22800317A44 /* README.md */,
 				F0C30740237AF25800BD2DEB /* ShortestPathVisualize */,
 				F0C3073F237AF25800BD2DEB /* Products */,
 			);
@@ -72,6 +77,7 @@
 				F0C30743237AF25800BD2DEB /* SceneDelegate.swift */,
 				F0C30745237AF25800BD2DEB /* ContentView.swift */,
 				F05BC010237BD30C00D9FEF1 /* Grid.swift */,
+				EB549EB7268DC73100317A44 /* GridElement.swift */,
 				F0BA1A4A237D4B2800A5058A /* GridViewModel.swift */,
 				F0451CF5237FD56F007BC51E /* GridViewModel+BiBFS.swift */,
 				F0451CF7237FD5C7007BC51E /* GridViewModel+Dijkstra.swift */,
@@ -120,7 +126,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1110;
-				LastUpgradeCheck = 1110;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = soyo;
 				TargetAttributes = {
 					F0C3073D237AF25800BD2DEB = {
@@ -153,6 +159,7 @@
 			files = (
 				F0C3074E237AF25C00BD2DEB /* LaunchScreen.storyboard in Resources */,
 				F0C3074B237AF25C00BD2DEB /* Preview Assets.xcassets in Resources */,
+				EB549EB6268DC22800317A44 /* README.md in Resources */,
 				F0C30748237AF25C00BD2DEB /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -164,6 +171,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB549EB8268DC73100317A44 /* GridElement.swift in Sources */,
 				F0BA1A4B237D4B2800A5058A /* GridViewModel.swift in Sources */,
 				F05BC013237BDFC100D9FEF1 /* HexagonMap.swift in Sources */,
 				F0C30742237AF25800BD2DEB /* AppDelegate.swift in Sources */,
@@ -216,6 +224,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -276,6 +285,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
