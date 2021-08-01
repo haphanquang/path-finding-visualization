@@ -53,6 +53,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EB2F7C1326B6DEE500FF4D70 /* Logic */ = {
+			isa = PBXGroup;
+			children = (
+				F0BA1A4A237D4B2800A5058A /* GridViewModel.swift */,
+				F0451CF5237FD56F007BC51E /* GridViewModel+BiBFS.swift */,
+				F0451CF7237FD5C7007BC51E /* GridViewModel+Dijkstra.swift */,
+			);
+			path = Logic;
+			sourceTree = "<group>";
+		};
+		EB2F7C1426B6DEEE00FF4D70 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				F048AF19237D9AB500A4F646 /* PriorityQueue.swift */,
+				F05BC012237BDFC100D9FEF1 /* HexagonMap.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		EB2F7C1526B6DF0A00FF4D70 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				F0C30745237AF25800BD2DEB /* ContentView.swift */,
+				EB549EB7268DC73100317A44 /* GridElement.swift */,
+				F05BC010237BD30C00D9FEF1 /* Grid.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		F0C30735237AF25800BD2DEB = {
 			isa = PBXGroup;
 			children = (
@@ -75,14 +104,9 @@
 			children = (
 				F0C30741237AF25800BD2DEB /* AppDelegate.swift */,
 				F0C30743237AF25800BD2DEB /* SceneDelegate.swift */,
-				F0C30745237AF25800BD2DEB /* ContentView.swift */,
-				F05BC010237BD30C00D9FEF1 /* Grid.swift */,
-				EB549EB7268DC73100317A44 /* GridElement.swift */,
-				F0BA1A4A237D4B2800A5058A /* GridViewModel.swift */,
-				F0451CF5237FD56F007BC51E /* GridViewModel+BiBFS.swift */,
-				F0451CF7237FD5C7007BC51E /* GridViewModel+Dijkstra.swift */,
-				F048AF19237D9AB500A4F646 /* PriorityQueue.swift */,
-				F05BC012237BDFC100D9FEF1 /* HexagonMap.swift */,
+				EB2F7C1526B6DF0A00FF4D70 /* View */,
+				EB2F7C1326B6DEE500FF4D70 /* Logic */,
+				EB2F7C1426B6DEEE00FF4D70 /* Model */,
 				F0C30747237AF25C00BD2DEB /* Assets.xcassets */,
 				F0C3074C237AF25C00BD2DEB /* LaunchScreen.storyboard */,
 				F0C3074F237AF25C00BD2DEB /* Info.plist */,

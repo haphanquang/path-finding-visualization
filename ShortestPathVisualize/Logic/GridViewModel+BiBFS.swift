@@ -10,13 +10,13 @@ import Foundation
 import SwiftUI
 
 extension GridViewModel {
-    
     func addPath(_ from: Hex, to: Hex) {
-        fixedPaths.append(Hex.line(from, to, map: self.gridData))
+        shortestPath.append(Hex.line(from, to, map: self.gridData))
+        self.refresh()
     }
     
     func findPathBidirectional () {
-        let startPoints = self.selectedLocation
+        let startPoints = self.destinations
         var queue1 = [startPoints.first!]
         var queue2 = [startPoints.last!]
         
@@ -37,17 +37,18 @@ extension GridViewModel {
                         visited1: &visited1,
                         visited2: &visited2,
                         checking: &self.checkingItems,
-                        collissions: &self.collisonItems,
+                        collissions: &self.collisions,
                         in: self.gridData
                     )
                     
-                    let vs1 = Array(visited1.map { HexDisplay($0, Color.visited1) })
-                    let vs2 = Array(visited2.map { HexDisplay($0, Color.visited2) })
-                    self.visitedDisplay = Array(vs1 + vs2)
+                    /// consider to separate later
+                    self.visited = visited1.union(visited2)
                     
                     if finished == true {
                         self.finish()
                     }
+                    
+                    self.refresh()
                 }
             }
             
@@ -60,7 +61,7 @@ extension GridViewModel {
         queue2: inout [Hex],
         visited1: inout Set<Hex>,
         visited2: inout Set<Hex>,
-        checking: inout [Hex],
+        checking: inout Set<Hex>,
         collissions: inout [Hex],
         in map: Map) -> Bool {
         
@@ -85,7 +86,7 @@ extension GridViewModel {
         }
             
         checking.removeAll()
-        checking.append(contentsOf: [left, right])
+        checking.insert(left + right)
         
         if visited1.contains(right) || visited2.contains(left) {
             checking.removeAll()
@@ -120,11 +121,11 @@ extension GridViewModel {
     
     func finish() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            let first = self.collisonItems.first!
-            let last = self.collisonItems.last!
+            let first = self.collisions.first!
+            let last = self.collisions.last!
             
-            let startPoint = self.selectedLocation.first!
-            let endPoint = self.selectedLocation.last!
+            let startPoint = self.destinations.first!
+            let endPoint = self.destinations.last!
             
             let distance1 = Hex.distance(first, startPoint) + Hex.distance(first, endPoint)
             let distance2 = Hex.distance(last, startPoint) + Hex.distance(last, endPoint)
@@ -142,5 +143,13 @@ extension GridViewModel {
         
         self.timer?.cancel()
         self.timer = nil
+    }
+}
+
+extension Set where Element: Hashable {
+    mutating func insert(_ list: [Element]) {
+        for e in list {
+            insert(e)
+        }
     }
 }

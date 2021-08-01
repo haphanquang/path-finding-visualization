@@ -13,7 +13,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack(alignment: .top) {
-            SelectedGrid(self.viewModel)
+            Grid(self.viewModel)
         
             VStack (alignment: .center) {
                 Picker("Algo", selection: self.$viewModel.algo) {

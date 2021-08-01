@@ -1,5 +1,5 @@
 # Description:
-Path finding visualization implementing with Swift 5.1 and SwiftUI
+Path finding visualization implementing with Swift 5 and SwiftUI
 
 # Result:
 <img src="./Screenshots/dijsktra.jpeg" width="800" >

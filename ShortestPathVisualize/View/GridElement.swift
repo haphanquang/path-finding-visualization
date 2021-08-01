@@ -21,6 +21,12 @@ struct HexView : View {
         weightAppear = (showWeight == 1)
     }
     
+    init(_ model: HexDisplay) {
+        self.hex = model.data
+        self.color = model.color
+        self.weightAppear = model.showWeight
+    }
+    
     var body: some View {
         ZStack {
             Path { path in
@@ -138,14 +144,16 @@ struct TapListenerView: UIViewRepresentable {
 extension Color {
     static let normal = Color.white
     
-    static let visited1 = Color(red: 0.5, green: 0.4, blue: 0.5)
-    static let visited2 = Color(red: 0.3, green: 0.9, blue: 0.3)
-    static let willVisit = Color(red: 0.7, green: 0.7, blue: 0.7)
+    static let selected = Color(red: 0.2, green: 0.6, blue: 0.2)
     
-    static let selected = Color(red: 0.3, green: 0.6, blue: 0.3)
-    static let border = Color(red: 0.1, green: 0.1, blue: 0.1)
+    static let visited1 = Color(red: 0.2, green: 0.8, blue: 0.2)
+    static let visited2 = Color(red: 0.2, green: 0.8, blue: 0.2)
     
-    static let checking = Color(red: 0.4, green: 0.4, blue: 1.0)
+    static let willVisit = Color(red: 0.6, green: 0.6, blue: 0.6)
+    
+    static let border = Color(red: 0.2, green: 0.2, blue: 0.2)
+    
+    static let checking = Color(red: 0.2, green: 0.7, blue: 0.2)
     static let collision = Color(red: 0.7, green: 0.4, blue: 0.4)
     
     static let finalPath = Color.blue

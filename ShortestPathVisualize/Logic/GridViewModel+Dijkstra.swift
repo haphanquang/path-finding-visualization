@@ -31,7 +31,7 @@ extension PathWay: Equatable {
 extension GridViewModel {
     
     func findPathDijkstra() {
-        let location = self.selectedLocation
+        let location = self.destinations
         let start = location.first!
         let target = location.last!
         
@@ -39,7 +39,7 @@ extension GridViewModel {
         
         var visited: Set<Hex> = Set()
         var willVisited: Set<Hex> = Set()
-        let blocked: Set<Hex> = Set(self.blockedItems)
+        let blocked: Set<Hex> = Set(self.wall)
         
         self.timer = DispatchSource.makeTimerSource()
         self.timer?.schedule(deadline: .now(), repeating: stepTimeDij)
@@ -51,17 +51,12 @@ extension GridViewModel {
             visited.insert(checkpoint.point)
             willVisited.remove(checkpoint.point)
             
-            //Todo: Ignore visited ???
-            
-            DispatchQueue.main.async { [unowned self] in
+            DispatchQueue.main.async {
                 self.pathSum = checkpoint.totalWeightToReach
-                
-                withAnimation {
-                    self.checkingItems = [checkpoint.point]
-                    self.fixedPaths = [Array(self.getGetPathWay(checkpoint).dropLast())]
-                    self.visitedDisplay = visited.map { HexDisplay($0, .visited2) }
-                }
             }
+            self.checkingItems = [checkpoint.point]
+            self.shortestPath = [Array(self.getGetPathWay(checkpoint).dropLast())]
+            self.visited = visited
             
             if checkpoint.point == target {
                 self.finished(self.getGetPathWay(checkpoint), sum: [checkpoint.totalWeightToReach])
@@ -87,13 +82,17 @@ extension GridViewModel {
                 }
             }
             
-            DispatchQueue.main.async {
-                self.willVisitedDisplay = Array(willVisited)
-            }
+            self.willVisit = willVisited
             
             if priorityQueue.isEmpty {
                 self.finished(self.getGetPathWay(checkpoint), sum: [checkpoint.totalWeightToReach])
                 return
+            }
+            
+            DispatchQueue.main.async {
+                withAnimation {
+                    self.refresh()
+                }
             }
         }
         self.timer?.resume()
@@ -103,10 +102,10 @@ extension GridViewModel {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
             withAnimation {
                 let a = Array(path.dropFirst().dropLast())
-                self?.fixedPaths = [a]
+                self?.shortestPath = [a]
                 self?.pathSum = sum.first!
+                self?.refresh()
             }
-            
         }
         
         self.timer?.cancel()
