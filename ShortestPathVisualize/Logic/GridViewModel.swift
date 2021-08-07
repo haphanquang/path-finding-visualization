@@ -28,9 +28,11 @@ class GridViewModel: ObservableObject {
     @Published var algo: Int = 0
     @Published var gridData = Map(height: 0, width: 0, origin: .zero)
     @Published var hexes = [HexDisplay]()
-    @Published var pathSum: Int = 0
+    @Published var pathSum: String = ""
     @Published var showWeight: Bool = false
+    @Published var speed: CGFloat = 0.7
     
+    var stepDelay = DispatchTimeInterval.milliseconds(300)
     private var cancellables = Set<AnyCancellable>()
     
     var wall = Set<Hex>()
@@ -44,12 +46,13 @@ class GridViewModel: ObservableObject {
     
     var timer: DispatchSourceTimer?
     
-    let stepTimeDij: DispatchTimeInterval = .milliseconds(200)
-    let stepBi: DispatchTimeInterval = .milliseconds(200)
-    
     func transform() {
         $algo.map { $0 > 0 }
             .assign(to: \.showWeight, on: self)
+            .store(in: &cancellables)
+        
+        $speed.map { DispatchTimeInterval.milliseconds(Int((1.1 - $0) * 400)) }
+            .assign(to: \.stepDelay, on: self)
             .store(in: &cancellables)
     }
     
@@ -107,14 +110,14 @@ class GridViewModel: ObservableObject {
         timer?.cancel()
         timer = nil
         
-        self.destinations.removeAll()
-        self.visited.removeAll()
-        self.willVisit.removeAll()
-        self.checkingItems.removeAll()
-        self.collisions.removeAll()
-        self.wall.removeAll()
-        self.shortestPath.removeAll()
-        self.pathSum = 0
+        self.destinations = []
+        self.visited = []
+        self.willVisit = []
+        self.checkingItems = []
+        self.collisions = []
+        self.wall = []
+        self.shortestPath = []
+        self.pathSum = ""
         self.refresh()
     }
 

@@ -22,9 +22,9 @@ extension GridViewModel {
         
         var visited1: Set<Hex> = Set()
         var visited2: Set<Hex> = Set()
-        
+    
         self.timer = DispatchSource.makeTimerSource()
-        self.timer?.schedule(deadline: .now(), repeating: stepBi)
+        self.timer?.schedule(deadline: .now(), repeating: stepDelay)
         self.timer?.setEventHandler { [weak self] in
             
             DispatchQueue.main.async { [weak self] in
@@ -86,7 +86,8 @@ extension GridViewModel {
         }
             
         checking.removeAll()
-        checking.insert(left + right)
+        checking.insert(left)
+        checking.insert(right)
         
         if visited1.contains(right) || visited2.contains(left) {
             checking.removeAll()

@@ -74,5 +74,8 @@ struct Map {
 
 
 struct Global {
-    static let layout = Layout(orientation: .pointy, size: CGSize.init(width: 20, height: 20), origin: .zero)
+    static let layout = Layout(
+        orientation: .pointy,
+        size: CGSize.init(width: 22, height: 22),
+        origin: .zero)
 }
