@@ -61,7 +61,7 @@ class UIHexagonMapView: UIView {
             path.stroke()
             
             
-            if showWeight {
+            if showWeight, hex.data.weight > 0 {
                 let position = CGPoint(
                     x: hex.data.corners.first!.x - itemSize.width,
                     y: hex.data.corners.first!.y - itemSize.height

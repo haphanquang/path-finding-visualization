@@ -40,7 +40,7 @@ struct Hex : Equatable, Hashable, Identifiable {
     }
     
     var corners: [Point] = []
-    let weight: Int = Int.random(in: 1...99)
+    var weight: Int = Int.random(in: 1...99)
     
     static let directions = [
         Hex(q: 1, r: 0, s: -1),

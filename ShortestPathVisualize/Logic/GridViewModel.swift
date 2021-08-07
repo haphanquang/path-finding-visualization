@@ -71,7 +71,8 @@ class GridViewModel: ObservableObject {
     
     
     func block(_ point: CGPoint) {
-        let hex = point.pixelToHex(Global.layout, map: self.gridData)
+        var hex = point.pixelToHex(Global.layout, map: self.gridData)
+        hex.weight = -1
         self.wall.insert(hex)
         self.refresh()
     }
@@ -134,9 +135,10 @@ class GridViewModel: ObservableObject {
         var willBeDraw = [HexDisplay]()
         let weight = (algo == 1)
         
-        for hex in map.points {
+        for var hex in map.points {
             
             if wall.contains(hex) {
+                hex.weight = -1
                 willBeDraw.append(HexDisplay(hex, color: .blocked, showWeight: false))
                 continue
             }
