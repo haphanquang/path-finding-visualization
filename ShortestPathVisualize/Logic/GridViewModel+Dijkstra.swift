@@ -122,7 +122,5 @@ extension GridViewModel {
         return result
     }
     
-    func addVisitedNeighbor(_ point: Hex, path: PathWay) {
-        
-    }
+    func addVisitedNeighbor(_ point: Hex, path: PathWay) { }
 }

@@ -10,76 +10,6 @@
 import Foundation
 import SwiftUI
 
-struct HexView : View {
-    var hex: Hex
-    var color: Color
-    var weightAppear: Bool
-    
-    init(_ h: Hex, c: Color = .selected, showWeight: Int = 0) {
-        hex = h
-        color = c
-        weightAppear = (showWeight == 1)
-    }
-    
-    init(_ model: HexDisplay) {
-        self.hex = model.data
-        self.color = model.color
-        self.weightAppear = model.showWeight
-    }
-    
-    var body: some View {
-        ZStack {
-            Path { path in
-                let allPoints = hex.corners.map { CGPoint(x: $0.x, y: $0.y) }
-                path.move(to: allPoints.first!)
-                for point in allPoints {
-                    path.addLine(to: point)
-                }
-            }.fill(self.color)
-            
-            
-            if (weightAppear) {
-                Text("\(hex.weight)")
-                .font(.system(size: 10))
-                .bold()
-                .foregroundColor(.white)
-                .position(x: hex.corners.first!.x - Global.layout.size.width / 2, y: hex.corners.first!.y - Global.layout.size.height / 2)
-            }
-        }
-        
-    }
-}
-
-struct HexEmptyView : View {
-    var hex: Hex
-    var color: Color
-    
-    init(_ h: Hex, c: Color = .selected) {
-        hex = h
-        color = c
-    }
-    
-    var body: some View {
-        ZStack {
-            Path { path in
-                let allPoints = hex.corners.map { CGPoint(x: $0.x, y: $0.y) }
-                path.move(to: allPoints.first!)
-                for point in allPoints {
-                    path.addLine(to: point)
-                }
-            }
-            .stroke(self.color)
-            
-            Text("\(hex.weight)")
-                .font(.system(size: 10))
-                .bold()
-                .foregroundColor(.white)
-                .position(x: hex.corners.first!.x - Global.layout.size.width / 2, y: hex.corners.first!.y - Global.layout.size.height / 2)
-        }
-        
-    }
-}
-
 struct TapListenerView: UIViewRepresentable {
     
     var tappedCallback: ((CGPoint) -> Void)
@@ -146,12 +76,12 @@ extension Color {
     
     static let selected = Color(red: 0.2, green: 0.6, blue: 0.2)
     
-    static let visited1 = Color(red: 0.2, green: 0.8, blue: 0.2)
-    static let visited2 = Color(red: 0.2, green: 0.8, blue: 0.2)
+    static let visited1 = Color(red: 0.8, green: 0.8, blue: 0.1)
+    static let visited2 = Color(red: 0.8, green: 0.8, blue: 0.1)
+
+    static let willVisit = Color(red: 0.7, green: 0.7, blue: 0.7)
     
-    static let willVisit = Color(red: 0.6, green: 0.6, blue: 0.6)
-    
-    static let border = Color(red: 0.2, green: 0.2, blue: 0.2)
+    static let border = Color(red: 0.9, green: 0.9, blue: 0.9)
     
     static let checking = Color(red: 0.2, green: 0.7, blue: 0.2)
     static let collision = Color(red: 0.7, green: 0.4, blue: 0.4)

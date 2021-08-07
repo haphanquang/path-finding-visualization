@@ -1,5 +1,5 @@
 //
-//  HexagonMap.swift
+//  Hex.swift
 //  ShortestPathVisualize
 //
 //  Created by QH on 11/13/19.
@@ -21,8 +21,13 @@ func -(lhs: Hex, rhs: Hex) -> Hex {
     return Hex(q: lhs.q - rhs.q, r: lhs.r - rhs.r, s: lhs.s - rhs.s)
 }
 
-struct Hex : Equatable, Hashable, Identifiable{
+struct Hex : Equatable, Hashable, Identifiable {
     let q, r, s: Int
+
+    struct Point : Hashable {
+        let x: CGFloat
+        let y: CGFloat
+    }
     
     var id: String {
         return "\(q)" + "\(r)" + "\(s)"
@@ -99,7 +104,9 @@ struct Hex : Equatable, Hashable, Identifiable{
     func isValidInMap(_ map: Map) -> Bool {
         return map.points.contains(self)
     }
+}
 
+extension Hex {
     static func ==(lhs: Hex, rhs: Hex) -> Bool {
         return lhs.q == rhs.q && lhs.r == rhs.r && lhs.s == rhs.s
     }
@@ -140,78 +147,6 @@ struct Hex : Equatable, Hashable, Identifiable{
     }
 }
 
-struct Orientation {
-    let f0,f1,f2,f3: Double
-    let b0,b1,b2,b3: Double
-    let startAngle: Double
-    
-    static let pointy = Orientation(f0: sqrt(3.0), f1: sqrt(3.0) / 2.0, f2: 0.0, f3: 3.0 / 2.0,
-                                    b0: sqrt(3.0) / 3.0, b1: -1.0 / 3.0, b2: 0.0, b3: 2.0 / 3.0,
-                                    startAngle: 0.5)
-    static let flat = Orientation(f0: 3.0 / 2.0, f1: 0.0, f2: sqrt(3.0) / 2.0, f3: sqrt(3.0),
-                                  b0: 2.0 / 3.0, b1: 0.0, b2: -1.0 / 3.0, b3: sqrt(3.0) / 3.0,
-                                  startAngle: 0.0)
-}
-
-struct Layout {
-    let orientation: Orientation
-    let size: CGSize
-    var origin: CGPoint
-    
-    func getCornerOffset(corner: Int) -> CGPoint {
-        let angle = 2 * Double.pi * (orientation.startAngle + Double(corner)) / 6
-        return CGPoint(x: size.width * CGFloat(cos(angle)), y: size.height * CGFloat(sin(angle)))
-    }
-    
-    func getPolygonCorners(hex: Hex) -> [CGPoint] {
-        var result: [CGPoint] = []
-        let center = CGPoint.hexToPixel(self, hex)
-        for i in 0..<6 {
-            let offset = getCornerOffset(corner: i)
-            result.append(CGPoint(x: center.x + offset.x, y: center.y + offset.y))
-        }
-        return result
-    }
-    
-    mutating func changeOrigin(_ point: CGPoint) {
-        origin = point
-    }
-}
-
-struct Map {
-    var layout: Layout = Global.layout
-    let heights: [Hex: Double] = [:]
-    var points: Set<Hex> = Set()
-
-    
-    init(size: CGSize, origin: CGPoint) {
-        self.init(height: Int(size.height / Global.layout.size.height), width: Int(size.width / Global.layout.size.width), origin: origin)
-    }
-    
-    init(height: Int, width: Int, origin: CGPoint) {
-        for i in 0...height {
-            let offset = Int(i / 2)
-            for j in -offset...(width - offset) {
-                let hex = Hex(q: j, r: i)
-                points.insert(hex)
-            }
-        }
-    }
-    
-    func getData(_ hex: Hex) -> Hex?{
-        return points.first(where: { $0 == hex })
-    }
-}
-
-
-struct Global {
-    static let layout = Layout(orientation: .pointy, size: CGSize.init(width: 20, height: 20), origin: .zero)
-}
-
-struct Point : Hashable {
-    let x: CGFloat
-    let y: CGFloat
-}
 extension CGPoint {
     static func hexToPixel(_ layout: Layout, _ hex: Hex) -> CGPoint {
         let orientation = layout.orientation

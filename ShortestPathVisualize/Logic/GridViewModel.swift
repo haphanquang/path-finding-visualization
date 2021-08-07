@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 import Combine
 
-struct HexDisplay: Identifiable {
+struct HexDisplay: Identifiable, Hashable {
     init(_ data: Hex, color: Color, showWeight: Bool = false) {
         self.data = data
         self.color = color
@@ -29,6 +29,9 @@ class GridViewModel: ObservableObject {
     @Published var gridData = Map(height: 0, width: 0, origin: .zero)
     @Published var hexes = [HexDisplay]()
     @Published var pathSum: Int = 0
+    @Published var showWeight: Bool = false
+    
+    private var cancellables = Set<AnyCancellable>()
     
     var wall = Set<Hex>()
     var willVisit = Set<Hex>()
@@ -41,10 +44,13 @@ class GridViewModel: ObservableObject {
     
     var timer: DispatchSourceTimer?
     
-    let stepTimeDij: DispatchTimeInterval = .milliseconds(150)
-    let stepBi: DispatchTimeInterval = .milliseconds(150)
+    let stepTimeDij: DispatchTimeInterval = .milliseconds(200)
+    let stepBi: DispatchTimeInterval = .milliseconds(200)
     
     func transform() {
+        $algo.map { $0 > 0 }
+            .assign(to: \.showWeight, on: self)
+            .store(in: &cancellables)
     }
     
     func refresh() {

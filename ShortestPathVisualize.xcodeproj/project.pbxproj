@@ -9,11 +9,13 @@
 /* Begin PBXBuildFile section */
 		EB549EB6268DC22800317A44 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = EB549EB5268DC22800317A44 /* README.md */; };
 		EB549EB8268DC73100317A44 /* GridElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB549EB7268DC73100317A44 /* GridElement.swift */; };
+		EBF8F9DA26BE51F900A93DC9 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF8F9D926BE51F900A93DC9 /* Map.swift */; };
+		EBF8F9DC26BE52F700A93DC9 /* HexMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF8F9DB26BE52F700A93DC9 /* HexMapView.swift */; };
 		F0451CF6237FD56F007BC51E /* GridViewModel+BiBFS.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0451CF5237FD56F007BC51E /* GridViewModel+BiBFS.swift */; };
 		F0451CF8237FD5C7007BC51E /* GridViewModel+Dijkstra.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0451CF7237FD5C7007BC51E /* GridViewModel+Dijkstra.swift */; };
 		F048AF1A237D9AB500A4F646 /* PriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = F048AF19237D9AB500A4F646 /* PriorityQueue.swift */; };
-		F05BC011237BD30C00D9FEF1 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05BC010237BD30C00D9FEF1 /* Grid.swift */; };
-		F05BC013237BDFC100D9FEF1 /* HexagonMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05BC012237BDFC100D9FEF1 /* HexagonMap.swift */; };
+		F05BC011237BD30C00D9FEF1 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05BC010237BD30C00D9FEF1 /* GridView.swift */; };
+		F05BC013237BDFC100D9FEF1 /* Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05BC012237BDFC100D9FEF1 /* Hex.swift */; };
 		F0BA1A4B237D4B2800A5058A /* GridViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0BA1A4A237D4B2800A5058A /* GridViewModel.swift */; };
 		F0C30742237AF25800BD2DEB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C30741237AF25800BD2DEB /* AppDelegate.swift */; };
 		F0C30744237AF25800BD2DEB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C30743237AF25800BD2DEB /* SceneDelegate.swift */; };
@@ -26,11 +28,13 @@
 /* Begin PBXFileReference section */
 		EB549EB5268DC22800317A44 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		EB549EB7268DC73100317A44 /* GridElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridElement.swift; sourceTree = "<group>"; };
+		EBF8F9D926BE51F900A93DC9 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
+		EBF8F9DB26BE52F700A93DC9 /* HexMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapView.swift; sourceTree = "<group>"; };
 		F0451CF5237FD56F007BC51E /* GridViewModel+BiBFS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GridViewModel+BiBFS.swift"; sourceTree = "<group>"; };
 		F0451CF7237FD5C7007BC51E /* GridViewModel+Dijkstra.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GridViewModel+Dijkstra.swift"; sourceTree = "<group>"; };
 		F048AF19237D9AB500A4F646 /* PriorityQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityQueue.swift; sourceTree = "<group>"; };
-		F05BC010237BD30C00D9FEF1 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
-		F05BC012237BDFC100D9FEF1 /* HexagonMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexagonMap.swift; sourceTree = "<group>"; };
+		F05BC010237BD30C00D9FEF1 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
+		F05BC012237BDFC100D9FEF1 /* Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hex.swift; sourceTree = "<group>"; };
 		F0BA1A4A237D4B2800A5058A /* GridViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridViewModel.swift; sourceTree = "<group>"; };
 		F0C3073E237AF25800BD2DEB /* ShortestPathVisualize.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShortestPathVisualize.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0C30741237AF25800BD2DEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -67,7 +71,8 @@
 			isa = PBXGroup;
 			children = (
 				F048AF19237D9AB500A4F646 /* PriorityQueue.swift */,
-				F05BC012237BDFC100D9FEF1 /* HexagonMap.swift */,
+				F05BC012237BDFC100D9FEF1 /* Hex.swift */,
+				EBF8F9D926BE51F900A93DC9 /* Map.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -76,8 +81,9 @@
 			isa = PBXGroup;
 			children = (
 				F0C30745237AF25800BD2DEB /* ContentView.swift */,
+				F05BC010237BD30C00D9FEF1 /* GridView.swift */,
 				EB549EB7268DC73100317A44 /* GridElement.swift */,
-				F05BC010237BD30C00D9FEF1 /* Grid.swift */,
+				EBF8F9DB26BE52F700A93DC9 /* HexMapView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -196,15 +202,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB549EB8268DC73100317A44 /* GridElement.swift in Sources */,
+				EBF8F9DC26BE52F700A93DC9 /* HexMapView.swift in Sources */,
 				F0BA1A4B237D4B2800A5058A /* GridViewModel.swift in Sources */,
-				F05BC013237BDFC100D9FEF1 /* HexagonMap.swift in Sources */,
+				F05BC013237BDFC100D9FEF1 /* Hex.swift in Sources */,
 				F0C30742237AF25800BD2DEB /* AppDelegate.swift in Sources */,
 				F0C30744237AF25800BD2DEB /* SceneDelegate.swift in Sources */,
 				F0451CF6237FD56F007BC51E /* GridViewModel+BiBFS.swift in Sources */,
 				F0451CF8237FD5C7007BC51E /* GridViewModel+Dijkstra.swift in Sources */,
+				EBF8F9DA26BE51F900A93DC9 /* Map.swift in Sources */,
 				F0C30746237AF25800BD2DEB /* ContentView.swift in Sources */,
 				F048AF1A237D9AB500A4F646 /* PriorityQueue.swift in Sources */,
-				F05BC011237BD30C00D9FEF1 /* Grid.swift in Sources */,
+				F05BC011237BD30C00D9FEF1 /* GridView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
