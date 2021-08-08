@@ -3,11 +3,9 @@ Path finding visualization implementing with Swift 5 and SwiftUI
 
 # Result:
 
-<img src="./Screenshots/bfs.png" width="600" >
-
-<img src="./Screenshots/astar.png" width="600" >
-
-<img src="./Screenshots/dijsktra.png" width="600" >
+<img src="./Screenshots/dijkstra.png" width="400" >
+<img src="./Screenshots/bfs.png" width="400" >
+<img src="./Screenshots/astar.png" width="400" >
 
 
 # Steps:
