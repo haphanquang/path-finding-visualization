@@ -27,16 +27,18 @@ struct ContentView: View {
                     }
                     .pickerStyle(SegmentedPickerStyle())
                     .frame(width: 200, height: 35, alignment: .trailing)
-                    .padding()
                     
                     
-                }
+                    Spacer()
+                    
+                    if self.viewModel.algo > 0 {
+                        Text(self.viewModel.pathSum)
+                            .font(.headline)
+                            .bold()
+                    }
+                }.padding()
                 
-                if self.viewModel.algo > 0 {
-                    Text(self.viewModel.pathSum)
-                        .font(.headline)
-                        .bold()
-                }
+                
                 Spacer()
                 HStack {
                     Text("Speed")
