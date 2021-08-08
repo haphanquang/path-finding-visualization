@@ -3,7 +3,7 @@ Path finding visualization implementing with Swift 5 and SwiftUI
 
 # Result:
 
-<img src="./Screenshots/dijkstra.png" width="500" ><img src="./Screenshots/astar.png" width="500" >
+<img src="./Screenshots/dijkstra.png" width="1024" >
 
 # Steps:
 - Hold and drag to draw walls (Dijsktra & A*) 
