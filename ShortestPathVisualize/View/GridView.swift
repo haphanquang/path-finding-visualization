@@ -20,16 +20,17 @@ struct GridView: View {
         GeometryReader { geometry in
             ZStack(alignment: .bottom) {
                 
-                HexMapView(
-                    itemSize: Global.layout.size,
-                    displayData: self.$viewModel.hexes,
-                    showWeight: self.$viewModel.showWeight
+                MapView(
+                    displayingData: self.$viewModel.hexes,
+                    showWeight: self.$viewModel.showWeight,
+                    mapData: self.viewModel.gridData,
+                    backgroundGrid: true
                 )
                 
                 TapListenerView(tappedCallback: { point in
                     self.viewModel.didTap(point)
                 }, blockedCallback: { point in
-                    if self.viewModel.algo == 1 {
+                    if self.viewModel.algo != 0 {
                         self.viewModel.block(point)
                     }
                 }).background(Color.clear)

@@ -51,7 +51,7 @@ class GridViewModel: ObservableObject {
             .assign(to: \.showWeight, on: self)
             .store(in: &cancellables)
         
-        $speed.map { DispatchTimeInterval.milliseconds(Int((1.1 - $0) * 400)) }
+        $speed.map { DispatchTimeInterval.milliseconds(Int((1.1 - $0) * 300)) }
             .assign(to: \.stepDelay, on: self)
             .store(in: &cancellables)
     }
@@ -100,10 +100,15 @@ class GridViewModel: ObservableObject {
     }
     
     private func run() {
-        if algo == 0  {
+        switch algo {
+        case 0:
             findPathBidirectional()
-        }else {
+        case 1:
             findPathDijkstra()
+        case 2:
+            findPathAStar()
+        default:
+            break
         }
     }
     

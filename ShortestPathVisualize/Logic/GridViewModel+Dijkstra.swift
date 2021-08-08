@@ -10,12 +10,12 @@ import Foundation
 import SwiftUI
 
 class PathWay {
-    var prevPath: PathWay? = nil
-    var point: Hex
+    var prevPath: PathWay?
+    var tail: Hex
     var totalWeightToReach: Int
     
     init(point: Hex, prevPath: PathWay?, totalWeight: Int) {
-        self.point = point
+        self.tail = point
         self.prevPath = prevPath
         self.totalWeightToReach = totalWeight
     }
@@ -23,14 +23,16 @@ class PathWay {
 
 extension PathWay: Equatable {
     static func == (lhs: PathWay, rhs: PathWay) -> Bool {
-        return lhs.point == rhs.point
+        return lhs.tail == rhs.tail
     }
 
 }
 
+typealias HeuristicFunction = ((_ lhs: Hex, _ rhs: Hex) -> Int)
+
 extension GridViewModel {
     
-    func findPathDijkstra() {
+    func findPathDijkstra(_ hFunction: HeuristicFunction? = nil) {
         let location = self.destinations
         let start = location.first!
         let target = location.last!
@@ -48,37 +50,43 @@ extension GridViewModel {
         self.timer?.setEventHandler { [weak self] in
             guard let `self` = self else { return }
             
-            let checkpoint = priorityQueue.dequeue()!
+            let currentPath = priorityQueue.dequeue()!
             
-            visited.insert(checkpoint.point)
-            willVisited.remove(checkpoint.point)
+            visited.insert(currentPath.tail)
+            willVisited.remove(currentPath.tail)
             
             DispatchQueue.main.async {
-                self.pathSum = self.getGetPathWay(checkpoint)
+                self.pathSum = self.getGetPathWay(currentPath)
                     .reversed()
                     .map { "\($0.weight)"}
-                    .joined(separator: " + ") + " = \(checkpoint.totalWeightToReach)"
+                    .joined(separator: " + ") + " = \(currentPath.totalWeightToReach)"
             }
             
-            self.checkingItems = [checkpoint.point]
-            self.shortestPath = [Array(self.getGetPathWay(checkpoint).dropLast())]
+            self.checkingItems = [currentPath.tail]
+            self.shortestPath = [Array(self.getGetPathWay(currentPath).dropLast())]
             self.visited = visited
             
-            if checkpoint.point == target {
-                self.finished(self.getGetPathWay(checkpoint), sum: checkpoint.totalWeightToReach)
+            if currentPath.tail == target {
+                self.finished(self.getGetPathWay(currentPath), sum: currentPath.totalWeightToReach)
                 return
             }
             
             
-            for neighbor in checkpoint.point.allNeighbors(self.gridData) {
+            for neighbor in currentPath.tail.neighbors(in: self.gridData) {
                 if visited.contains(neighbor) || willVisited.contains(neighbor) || blocked.contains(neighbor) {
                     continue
                 }
                 
                 willVisited.insert(neighbor)
                 
-                let weight = checkpoint.totalWeightToReach + neighbor.weight
-                let pathToNeighbor = PathWay(point: neighbor, prevPath: checkpoint, totalWeight: weight)
+                let weight = currentPath.totalWeightToReach
+                    + neighbor.weight
+                    + (hFunction?(start, neighbor) ?? 0)
+                
+                let pathToNeighbor = PathWay(
+                    point: neighbor,
+                    prevPath: currentPath,
+                    totalWeight: weight)
                 
                 priorityQueue.enqueue(pathToNeighbor)
                 
@@ -91,8 +99,8 @@ extension GridViewModel {
             self.willVisit = willVisited
             
             if priorityQueue.isEmpty {
-                self.finished(self.getGetPathWay(checkpoint),
-                              sum: checkpoint.totalWeightToReach)
+                self.finished(self.getGetPathWay(currentPath),
+                              sum: currentPath.totalWeightToReach)
                 return
             }
             
@@ -123,10 +131,10 @@ extension GridViewModel {
     }
     
     func getGetPathWay(_ path: PathWay) -> [Hex] {
-        var result = [path.point]
+        var result = [path.tail]
         var prev = path.prevPath
         while prev != nil {
-            result.append(prev!.point)
+            result.append(prev!.tail)
             prev = prev?.prevPath
         }
         return result

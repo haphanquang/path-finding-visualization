@@ -23,6 +23,7 @@ struct ContentView: View {
                     ) {
                         Text("BiBFS").tag(0)
                         Text("Dijkstra").tag(1)
+                        Text("A *").tag(2)
                     }
                     .pickerStyle(SegmentedPickerStyle())
                     .frame(width: 200, height: 35, alignment: .trailing)
@@ -31,23 +32,20 @@ struct ContentView: View {
                     
                 }
                 
-                if self.viewModel.algo == 1 {
+                if self.viewModel.algo > 0 {
                     Text(self.viewModel.pathSum)
                         .font(.headline)
                         .bold()
                 }
-                
                 Spacer()
-                
                 HStack {
                     Text("Speed")
-                    
                     Slider(value: self.$viewModel.speed)
-                        .frame(width: 200, height: 35, alignment: .trailing)
+                        .frame(width: 180, height: 35, alignment: .trailing)
                     
                     Spacer()
                     if self.viewModel.destinations.count == 0 {
-                        if self.viewModel.algo == 1 {
+                        if self.viewModel.algo != 0 {
                             Text("Tap any point on the screen / longpress and drag to draw wall")
                         } else{
                             Text("Tap any point on the screen")
@@ -55,7 +53,7 @@ struct ContentView: View {
                     } else if self.viewModel.destinations.count == 1 {
                         Text("Tap second point to start visualization")
                     } else {
-                        Text("Tap to clean")
+                        Text("Tap to stop/clean")
                     }
                 }.padding()
             }

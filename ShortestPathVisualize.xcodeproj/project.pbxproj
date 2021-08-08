@@ -8,9 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		EB549EB6268DC22800317A44 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = EB549EB5268DC22800317A44 /* README.md */; };
-		EB549EB8268DC73100317A44 /* GridElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB549EB7268DC73100317A44 /* GridElement.swift */; };
+		EB549EB8268DC73100317A44 /* TapListenerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB549EB7268DC73100317A44 /* TapListenerView.swift */; };
+		EB99885A26C01DE900B4E066 /* GridViewModel+AStar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB99885926C01DE900B4E066 /* GridViewModel+AStar.swift */; };
+		EB99885C26C0284B00B4E066 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB99885B26C0284B00B4E066 /* Utils.swift */; };
+		EB99885E26C0304700B4E066 /* Screenshots in Resources */ = {isa = PBXBuildFile; fileRef = EB99885D26C0304700B4E066 /* Screenshots */; };
 		EBF8F9DA26BE51F900A93DC9 /* Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF8F9D926BE51F900A93DC9 /* Map.swift */; };
-		EBF8F9DC26BE52F700A93DC9 /* HexMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF8F9DB26BE52F700A93DC9 /* HexMapView.swift */; };
+		EBF8F9DC26BE52F700A93DC9 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF8F9DB26BE52F700A93DC9 /* MapView.swift */; };
 		F0451CF6237FD56F007BC51E /* GridViewModel+BiBFS.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0451CF5237FD56F007BC51E /* GridViewModel+BiBFS.swift */; };
 		F0451CF8237FD5C7007BC51E /* GridViewModel+Dijkstra.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0451CF7237FD5C7007BC51E /* GridViewModel+Dijkstra.swift */; };
 		F048AF1A237D9AB500A4F646 /* PriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = F048AF19237D9AB500A4F646 /* PriorityQueue.swift */; };
@@ -27,9 +30,12 @@
 
 /* Begin PBXFileReference section */
 		EB549EB5268DC22800317A44 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		EB549EB7268DC73100317A44 /* GridElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridElement.swift; sourceTree = "<group>"; };
+		EB549EB7268DC73100317A44 /* TapListenerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapListenerView.swift; sourceTree = "<group>"; };
+		EB99885926C01DE900B4E066 /* GridViewModel+AStar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GridViewModel+AStar.swift"; sourceTree = "<group>"; };
+		EB99885B26C0284B00B4E066 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		EB99885D26C0304700B4E066 /* Screenshots */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Screenshots; sourceTree = "<group>"; };
 		EBF8F9D926BE51F900A93DC9 /* Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
-		EBF8F9DB26BE52F700A93DC9 /* HexMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexMapView.swift; sourceTree = "<group>"; };
+		EBF8F9DB26BE52F700A93DC9 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		F0451CF5237FD56F007BC51E /* GridViewModel+BiBFS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GridViewModel+BiBFS.swift"; sourceTree = "<group>"; };
 		F0451CF7237FD5C7007BC51E /* GridViewModel+Dijkstra.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GridViewModel+Dijkstra.swift"; sourceTree = "<group>"; };
 		F048AF19237D9AB500A4F646 /* PriorityQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityQueue.swift; sourceTree = "<group>"; };
@@ -63,6 +69,7 @@
 				F0BA1A4A237D4B2800A5058A /* GridViewModel.swift */,
 				F0451CF5237FD56F007BC51E /* GridViewModel+BiBFS.swift */,
 				F0451CF7237FD5C7007BC51E /* GridViewModel+Dijkstra.swift */,
+				EB99885926C01DE900B4E066 /* GridViewModel+AStar.swift */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -73,6 +80,7 @@
 				F048AF19237D9AB500A4F646 /* PriorityQueue.swift */,
 				F05BC012237BDFC100D9FEF1 /* Hex.swift */,
 				EBF8F9D926BE51F900A93DC9 /* Map.swift */,
+				EB99885B26C0284B00B4E066 /* Utils.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -82,8 +90,8 @@
 			children = (
 				F0C30745237AF25800BD2DEB /* ContentView.swift */,
 				F05BC010237BD30C00D9FEF1 /* GridView.swift */,
-				EB549EB7268DC73100317A44 /* GridElement.swift */,
-				EBF8F9DB26BE52F700A93DC9 /* HexMapView.swift */,
+				EBF8F9DB26BE52F700A93DC9 /* MapView.swift */,
+				EB549EB7268DC73100317A44 /* TapListenerView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -92,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				EB549EB5268DC22800317A44 /* README.md */,
+				EB99885D26C0304700B4E066 /* Screenshots */,
 				F0C30740237AF25800BD2DEB /* ShortestPathVisualize */,
 				F0C3073F237AF25800BD2DEB /* Products */,
 			);
@@ -191,6 +200,7 @@
 				F0C3074B237AF25C00BD2DEB /* Preview Assets.xcassets in Resources */,
 				EB549EB6268DC22800317A44 /* README.md in Resources */,
 				F0C30748237AF25C00BD2DEB /* Assets.xcassets in Resources */,
+				EB99885E26C0304700B4E066 /* Screenshots in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,8 +211,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB549EB8268DC73100317A44 /* GridElement.swift in Sources */,
-				EBF8F9DC26BE52F700A93DC9 /* HexMapView.swift in Sources */,
+				EB99885A26C01DE900B4E066 /* GridViewModel+AStar.swift in Sources */,
+				EB549EB8268DC73100317A44 /* TapListenerView.swift in Sources */,
+				EBF8F9DC26BE52F700A93DC9 /* MapView.swift in Sources */,
+				EB99885C26C0284B00B4E066 /* Utils.swift in Sources */,
 				F0BA1A4B237D4B2800A5058A /* GridViewModel.swift in Sources */,
 				F05BC013237BDFC100D9FEF1 /* Hex.swift in Sources */,
 				F0C30742237AF25800BD2DEB /* AppDelegate.swift in Sources */,

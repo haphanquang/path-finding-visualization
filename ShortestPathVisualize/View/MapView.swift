@@ -8,14 +8,20 @@
 
 import SwiftUI
 
-struct HexMapView: View {
-    let itemSize: CGSize
-    @Binding var displayData: [HexDisplay]
+struct MapView: View {
+    @Binding var displayingData: [HexDisplay]
     @Binding var showWeight: Bool
+    
+    let mapData: Map
+    let backgroundGrid: Bool
 
     var body: some View {
         ZStack {
-            HexagonMapView(displayData: $displayData, showWeight: $showWeight)
+            if backgroundGrid {
+                EmptyHexagonMapView(gridData: Array(mapData.points.map { HexDisplay($0, color: .clear) }))
+            }
+            HexagonMapView(displayData: $displayingData, showWeight: $showWeight)
+            
         }
     }
 }
@@ -23,16 +29,35 @@ struct HexMapView: View {
 struct HexagonMapView: UIViewRepresentable {
     @Binding var displayData: [HexDisplay]
     @Binding var showWeight: Bool
+    var filled: Bool = true
 
     func makeUIView(context: Context) -> UIHexagonMapView {
         let view = UIHexagonMapView()
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = .clear
         return view
     }
 
     func updateUIView(_ uiView: UIHexagonMapView, context: Context) {
         uiView.displayData = displayData
         uiView.showWeight = showWeight
+        uiView.filled = filled
+        uiView.setNeedsDisplay()
+    }
+}
+
+struct EmptyHexagonMapView: UIViewRepresentable {
+    var gridData: [HexDisplay]
+
+    func makeUIView(context: Context) -> UIHexagonMapView {
+        let view = UIHexagonMapView()
+        view.backgroundColor = .clear
+        return view
+    }
+
+    func updateUIView(_ uiView: UIHexagonMapView, context: Context) {
+        uiView.displayData = gridData
+        uiView.showWeight = false
+        uiView.filled = false
         uiView.setNeedsDisplay()
     }
 }
@@ -40,6 +65,8 @@ struct HexagonMapView: UIViewRepresentable {
 class UIHexagonMapView: UIView {
     var displayData: [HexDisplay] = []
     var showWeight: Bool = false
+    var filled: Bool = true
+    
     let itemSize: CGSize = Global.layout.size
     
     override func draw(_ rect: CGRect) {
@@ -53,13 +80,14 @@ class UIHexagonMapView: UIView {
             }
             path.close()
             
-            hex.color.uiColor().setFill()
-            path.fill()
+            if filled {
+                hex.color.uiColor().setFill()
+                path.fill()
+            }
             
-            UIColor.white.setStroke()
-            path.lineWidth = 0.5
+            Color.border.uiColor().setStroke()
+            path.lineWidth = 1
             path.stroke()
-            
             
             if showWeight, hex.data.weight > 0 {
                 let position = CGPoint(
@@ -75,32 +103,5 @@ class UIHexagonMapView: UIView {
                     ])
             }
         }
-    }
-}
-
-extension Color {
-    func uiColor() -> UIColor {
-
-        if #available(iOS 14.0, *) {
-            return UIColor(self)
-        }
-
-        let components = self.components()
-        return UIColor(red: components.r, green: components.g, blue: components.b, alpha: components.a)
-    }
-
-    private func components() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
-        let scanner = Scanner(string: self.description.trimmingCharacters(in: CharacterSet.alphanumerics.inverted))
-        var hexNumber: UInt64 = 0
-        var r: CGFloat = 0.0, g: CGFloat = 0.0, b: CGFloat = 0.0, a: CGFloat = 0.0
-
-        let result = scanner.scanHexInt64(&hexNumber)
-        if result {
-            r = CGFloat((hexNumber & 0xff000000) >> 24) / 255
-            g = CGFloat((hexNumber & 0x00ff0000) >> 16) / 255
-            b = CGFloat((hexNumber & 0x0000ff00) >> 8) / 255
-            a = CGFloat(hexNumber & 0x000000ff) / 255
-        }
-        return (r, g, b, a)
     }
 }

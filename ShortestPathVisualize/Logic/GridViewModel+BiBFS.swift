@@ -56,7 +56,7 @@ extension GridViewModel {
         self.timer?.resume()
     }
     
-    func bfsStep(
+    private func bfsStep(
         queue1: inout [Hex],
         queue2: inout [Hex],
         visited1: inout Set<Hex>,
@@ -105,13 +105,13 @@ extension GridViewModel {
         visited1.insert(left)
         visited2.insert(right)
         
-        for neighbor in left.allNeighbors(map) {
+        for neighbor in left.neighbors(in: map) {
             if !visited1.contains(neighbor) {
                 queue1.append(neighbor)
             }
         }
         
-        for neighbor in right.allNeighbors(map) {
+        for neighbor in right.neighbors(in: map) {
             if !visited2.contains(neighbor){
                 queue2.append(neighbor)
             }
@@ -120,7 +120,7 @@ extension GridViewModel {
         return false
     }
     
-    func finish() {
+    private func finish() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             let first = self.collisions.first!
             let last = self.collisions.last!

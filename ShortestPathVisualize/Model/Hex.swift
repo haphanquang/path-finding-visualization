@@ -90,7 +90,7 @@ struct Hex : Equatable, Hashable, Identifiable {
         self.corners = layout.getPolygonCorners(hex: self).map { Point(x: $0.x, y: $0.y) }
     }
     
-    func allNeighbors(_ map: Map) -> Set<Hex> {
+    func neighbors(in map: Map) -> Set<Hex> {
         var result: Set<Hex> = Set()
         for i in 0...5 {
             let neightbor = Hex.neighbor(self, direction: i)
