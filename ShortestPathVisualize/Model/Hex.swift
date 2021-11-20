@@ -40,7 +40,7 @@ struct Hex : Equatable, Hashable, Identifiable {
     }
     
     var corners: [Point] = []
-    var weight: Int = Int.random(in: 1...99)
+    var weight: Int = 1
     
     static let directions = [
         Hex(q: 1, r: 0, s: -1),
@@ -94,7 +94,7 @@ struct Hex : Equatable, Hashable, Identifiable {
         var result: Set<Hex> = Set()
         for i in 0...5 {
             let neightbor = Hex.neighbor(self, direction: i)
-            if let hexInMap = map.getData(neightbor) {
+            if let hexInMap = map.isHexExist(neightbor) {
                 result.insert(hexInMap)
             }
         }
@@ -139,7 +139,7 @@ extension Hex {
         
         for i in 0...distance {
             let lerp = Hex.lerp(start, to, 1.0 / Double(distance) * Double(i))
-            if let data = map.getData(lerp) {
+            if let data = map.isHexExist(lerp) {
                 results.append(data)
             }
         }
@@ -157,12 +157,12 @@ extension CGPoint {
     
     func pixelToHex(_ layout: Layout, map: Map) -> Hex {
         let orientation = layout.orientation
-        let point = CGPoint(x: (self.x - layout.origin.x) / layout.size.width
-                            , y: (self.y - layout.origin.y) / layout.size.height)
+        let point = CGPoint(x: (self.x - layout.origin.x) / layout.size.width,
+                            y: (self.y - layout.origin.y) / layout.size.height)
         let q = orientation.b0 * Double(point.x) + orientation.b1 * Double(point.y)
         let r = orientation.b2 * Double(point.x) + orientation.b3 * Double(point.y)
         let hex = Hex(q: q, r: r)
-        if let data = map.getData(hex) {
+        if let data = map.isHexExist(hex) {
             return data
         }else{
             return hex

@@ -19,7 +19,6 @@ struct GridView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .bottom) {
-                
                 MapView(
                     displayingData: self.$viewModel.hexes,
                     showWeight: self.$viewModel.showWeight,
@@ -30,11 +29,10 @@ struct GridView: View {
                 TapListenerView(tappedCallback: { point in
                     self.viewModel.didTap(point)
                 }, blockedCallback: { point in
-                    if self.viewModel.algo != 0 {
+                    if self.viewModel.algo != .biDirectional {
                         self.viewModel.block(point)
                     }
-                }).background(Color.clear)
-    
+                }).background(Color.clear)    
                 
             }.onAppear {
                 self.viewModel.transform()

@@ -31,15 +31,15 @@ extension Color {
 
 extension Color {
     static let normal = Color.white
-    
-    static let selected = Color(red: 0.2, green: 0.6, blue: 0.2)
+
+    static let selected = Color(red: 0.9, green: 0.2, blue: 0.2)
     
     static let visited1 = Color(red: 0.8, green: 0.8, blue: 0.1)
     static let visited2 = Color(red: 0.8, green: 0.8, blue: 0.1)
 
     static let willVisit = Color(red: 0.7, green: 0.7, blue: 0.7)
     
-    static let border = Color(red: 0.9, green: 0.9, blue: 0.9)
+    static let border = Color(red: 0.93, green: 0.93, blue: 0.93)
     
     static let checking = Color(red: 0.2, green: 0.7, blue: 0.2)
     static let collision = Color(red: 0.7, green: 0.4, blue: 0.4)

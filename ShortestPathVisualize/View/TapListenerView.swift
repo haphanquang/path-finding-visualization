@@ -17,13 +17,16 @@ struct TapListenerView: UIViewRepresentable {
     func makeUIView(context: UIViewRepresentableContext<TapListenerView>) -> UIView {
         let v = UIView(frame: .zero)
         
-        let gesture = UITapGestureRecognizer(target: context.coordinator
-                                            , action: #selector(Coordinator.tapped))
+        let gesture = UITapGestureRecognizer(
+            target: context.coordinator,
+            action: #selector(Coordinator.tapped)
+        )
+        let longPress = UILongPressGestureRecognizer(
+            target: context.coordinator,
+            action: #selector(Coordinator.blocked)
+        )
         
-        let longPress = UILongPressGestureRecognizer(target: context.coordinator
-                                            , action: #selector(Coordinator.blocked))
-        longPress.minimumPressDuration = 0.3
-            
+        longPress.minimumPressDuration = 0.25
         v.addGestureRecognizer(gesture)
         v.addGestureRecognizer(longPress)
         
@@ -39,14 +42,14 @@ struct TapListenerView: UIViewRepresentable {
             self.blockedCallback = blockedCallback
         }
         
-        @objc func tapped(gesture :UITapGestureRecognizer) {
+        @objc
+        func tapped(gesture :UITapGestureRecognizer) {
             let point = gesture.location(in: gesture.view)
             self.tappedCallback(point)
         }
         
-        @objc func blocked(gesture: UILongPressGestureRecognizer) {
-//            let point = gesture.location(in: gesture.view)
-//            self.blockedCallback(point)
+        @objc
+        func blocked(gesture: UILongPressGestureRecognizer) {
             switch gesture.state {
             case .began, .changed:
                 guard let view = gesture.view else {
@@ -61,11 +64,8 @@ struct TapListenerView: UIViewRepresentable {
     }
 
     func makeCoordinator() -> TapListenerView.Coordinator {
-        return Coordinator(tappedCallback:self.tappedCallback, blockedCallback: self.blockedCallback)
+        return Coordinator(tappedCallback: self.tappedCallback, blockedCallback: self.blockedCallback)
     }
 
-    func updateUIView(_ uiView: UIView,
-                       context: UIViewRepresentableContext<TapListenerView>) {
-    }
-
+    func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<TapListenerView>) { }
 }

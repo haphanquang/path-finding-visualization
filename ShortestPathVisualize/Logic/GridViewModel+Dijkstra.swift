@@ -43,7 +43,7 @@ extension GridViewModel {
         
         var visited: Set<Hex> = Set()
         var willVisited: Set<Hex> = Set()
-        let blocked: Set<Hex> = Set(self.wall)
+        let blocked: Set<Hex> = Set(self.walls)
         
         self.timer = DispatchSource.makeTimerSource()
         self.timer?.schedule(deadline: .now(), repeating: stepDelay)
@@ -99,13 +99,13 @@ extension GridViewModel {
             self.willVisit = willVisited
             
             if priorityQueue.isEmpty {
-                self.finished(self.getGetPathWay(currentPath),
-                              sum: currentPath.totalWeightToReach)
+                self.finished(self.getGetPathWay(currentPath), sum: currentPath.totalWeightToReach)
                 return
             }
             
-            DispatchQueue.main.async {
+            DispatchQueue.main.async {  [weak self] in
                 withAnimation {
+                    guard let self = self else { return }
                     self.refresh()
                 }
             }
@@ -116,16 +116,16 @@ extension GridViewModel {
     func finished(_ path: [Hex], sum: Int) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
             withAnimation {
+                guard let self = self else { return }
                 let a = Array(path.dropFirst().dropLast())
-                self?.shortestPath = [a]
-                self?.pathSum = path
+                self.shortestPath = [a]
+                self.pathSum = path
                     .reversed()
                     .map { "\($0.weight)"}
                     .joined(separator: " + ") + " = \(sum)"
-                self?.refresh()
+                self.refresh()
             }
         }
-        
         self.timer?.cancel()
         self.timer = nil
     }
@@ -133,12 +133,10 @@ extension GridViewModel {
     func getGetPathWay(_ path: PathWay) -> [Hex] {
         var result = [path.tail]
         var prev = path.prevPath
-        while prev != nil {
-            result.append(prev!.tail)
-            prev = prev?.prevPath
+        while let current = prev {
+            result.append(current.tail)
+            prev = current.prevPath
         }
         return result
     }
-    
-    func addVisitedNeighbor(_ point: Hex, path: PathWay) { }
 }

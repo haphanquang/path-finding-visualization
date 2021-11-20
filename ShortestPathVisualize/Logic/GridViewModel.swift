@@ -24,18 +24,24 @@ struct HexDisplay: Identifiable, Hashable {
     let showWeight: Bool
 }
 
+enum Algo: Int, CaseIterable {
+    case biDirectional = 0, dijkstra, aStar
+}
+
 class GridViewModel: ObservableObject {
-    @Published var algo: Int = 0
+    @Published var algo: Algo = .biDirectional
     @Published var gridData = Map(height: 0, width: 0, origin: .zero)
     @Published var hexes = [HexDisplay]()
     @Published var pathSum: String = ""
     @Published var showWeight: Bool = false
     @Published var speed: CGFloat = 0.7
     
-    var stepDelay = DispatchTimeInterval.milliseconds(300)
+    private static let stepTime: CGFloat = 200
+    
+    var stepDelay: DispatchTimeInterval = .milliseconds(Int(GridViewModel.stepTime))
     private var cancellables = Set<AnyCancellable>()
     
-    var wall = Set<Hex>()
+    var walls = Set<Hex>()
     var willVisit = Set<Hex>()
     var visited = Set<Hex>()
 
@@ -47,33 +53,21 @@ class GridViewModel: ObservableObject {
     var timer: DispatchSourceTimer?
     
     func transform() {
-        $algo.map { $0 > 0 }
+        $algo.map { $0 != .biDirectional }
             .assign(to: \.showWeight, on: self)
             .store(in: &cancellables)
         
-        $speed.map { DispatchTimeInterval.milliseconds(Int((1.1 - $0) * 300)) }
+        $speed.map { (1.1 - $0) * GridViewModel.stepTime }
+            .map { .milliseconds(Int($0)) }
             .assign(to: \.stepDelay, on: self)
             .store(in: &cancellables)
-    }
-    
-    func refresh() {
-        self.hexes = createViews(
-            in: self.gridData,
-            wall: self.wall,
-            destinations: self.destinations,
-            visited: self.visited,
-            willVisit: self.willVisit,
-            checking: self.checkingItems,
-            collisions: self.collisions,
-            path: Array(self.shortestPath.joined()),
-            algo: self.algo)
     }
     
     
     func block(_ point: CGPoint) {
         var hex = point.pixelToHex(Global.layout, map: self.gridData)
         hex.weight = -1
-        self.wall.insert(hex)
+        self.walls.insert(hex)
         self.refresh()
     }
     
@@ -86,6 +80,7 @@ class GridViewModel: ObservableObject {
         
         let count = setDestination(at: point)
         self.refresh()
+        
         if count == 2 {
             run()
         }
@@ -93,7 +88,7 @@ class GridViewModel: ObservableObject {
     
     private func setDestination(at point: CGPoint) -> Int {
         let hex = point.pixelToHex(Global.layout, map: self.gridData)
-        if !self.wall.contains(hex) {
+        if !self.walls.contains(hex) {
             self.destinations.append(hex)
         }
         return destinations.count
@@ -101,44 +96,73 @@ class GridViewModel: ObservableObject {
     
     private func run() {
         switch algo {
-        case 0:
+        case .biDirectional:
             findPathBidirectional()
-        case 1:
+        case .dijkstra:
             findPathDijkstra()
-        case 2:
+        case .aStar:
             findPathAStar()
-        default:
-            break
         }
     }
     
     private func reset() {
         timer?.cancel()
         timer = nil
-        
         self.destinations = []
         self.visited = []
         self.willVisit = []
         self.checkingItems = []
         self.collisions = []
-        self.wall = []
+        self.walls = []
         self.shortestPath = []
         self.pathSum = ""
         self.refresh()
     }
-
-    private func createViews(in map: Map,
-                   wall: Set<Hex>,
-                   destinations: [Hex],
-                   visited: Set<Hex>,
-                   willVisit: Set<Hex>,
-                   checking: Set<Hex>,
-                   collisions: [Hex],
-                   path: [Hex],
-                   algo: Int) -> [HexDisplay] {
+    
+    func randomWalls() {
+        guard self.walls.isEmpty else {
+            self.walls = []
+            self.refresh()
+            return
+        }
         
+        let percent = self.gridData.points.count / 5
+        while walls.count < percent {
+            if var hex = self.gridData.random() {
+                hex.weight = -1
+                self.walls.insert(hex)
+            }
+        }
+        self.refresh()
+    }
+}
+
+extension GridViewModel {
+    func refresh() {
+        self.hexes = createViews(
+            in: self.gridData,
+            wall: self.walls,
+            destinations: self.destinations,
+            visited: self.visited,
+            willVisit: self.willVisit,
+            checking: self.checkingItems,
+            collisions: self.collisions,
+            path: Array(self.shortestPath.joined()),
+            showWeight: (algo == .dijkstra))
+    }
+    
+    private func createViews(
+        in map: Map,
+        wall: Set<Hex>,
+        destinations: [Hex],
+        visited: Set<Hex>,
+        willVisit: Set<Hex>,
+        checking: Set<Hex>,
+        collisions: [Hex],
+        path: [Hex],
+        showWeight: Bool
+    ) -> [HexDisplay] {
         var willBeDraw = [HexDisplay]()
-        let weight = (algo == 1)
         
         for var hex in map.points {
             
@@ -149,42 +173,41 @@ class GridViewModel: ObservableObject {
             }
             
             if path.contains(hex) {
-                willBeDraw.append(HexDisplay(hex, color: .finalPath, showWeight: weight))
+                willBeDraw.append(HexDisplay(hex, color: .finalPath, showWeight: showWeight))
                 continue
             }
             
             if path.contains(hex) {
-                willBeDraw.append(HexDisplay(hex, color: .finalPath, showWeight: weight))
+                willBeDraw.append(HexDisplay(hex, color: .finalPath, showWeight: showWeight))
                 continue
             }
             
             if destinations.contains(hex) {
-                willBeDraw.append(HexDisplay(hex, color: .selected, showWeight: weight))
+                willBeDraw.append(HexDisplay(hex, color: .selected, showWeight: showWeight))
                 continue
             }
             
             if collisions.contains(hex) {
-                willBeDraw.append(HexDisplay(hex, color: .collision, showWeight: weight))
+                willBeDraw.append(HexDisplay(hex, color: .collision, showWeight: showWeight))
                 continue
             }
             
             if checking.contains(hex) {
-                willBeDraw.append(HexDisplay(hex, color: .checking, showWeight: weight))
+                willBeDraw.append(HexDisplay(hex, color: .checking, showWeight: showWeight))
                 continue
             }
             
             if willVisit.contains(hex) {
-                willBeDraw.append(HexDisplay(hex, color: .willVisit, showWeight: weight))
+                willBeDraw.append(HexDisplay(hex, color: .willVisit, showWeight: showWeight))
                 continue
             }
             
             if visited.contains(hex) {
-                willBeDraw.append(HexDisplay(hex, color: .visited1, showWeight: weight))
+                willBeDraw.append(HexDisplay(hex, color: .visited1, showWeight: showWeight))
                 continue
             }
             
         }
-        
         return willBeDraw
     }
 }

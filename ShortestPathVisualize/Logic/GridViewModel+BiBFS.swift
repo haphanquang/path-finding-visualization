@@ -26,7 +26,6 @@ extension GridViewModel {
         self.timer = DispatchSource.makeTimerSource()
         self.timer?.schedule(deadline: .now(), repeating: stepDelay)
         self.timer?.setEventHandler { [weak self] in
-            
             DispatchQueue.main.async { [weak self] in
                 withAnimation {
                     guard let `self` = self else { return }

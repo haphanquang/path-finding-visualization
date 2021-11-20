@@ -21,7 +21,6 @@ struct MapView: View {
                 EmptyHexagonMapView(gridData: Array(mapData.points.map { HexDisplay($0, color: .clear) }))
             }
             HexagonMapView(displayData: $displayingData, showWeight: $showWeight)
-            
         }
     }
 }
@@ -98,7 +97,7 @@ class UIHexagonMapView: UIView {
                 NSString(string: "\(hex.data.weight)").draw(
                     at: position,
                     withAttributes: [
-                        .font: UIFont.boldSystemFont(ofSize: 11),
+                        .font: UIFont.boldSystemFont(ofSize: 9),
                         .foregroundColor: UIColor.white
                     ])
             }

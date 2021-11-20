@@ -51,24 +51,33 @@ struct Map {
     var layout: Layout = Global.layout
     let heights: [Hex: Double] = [:]
     var points: Set<Hex> = Set()
-
+    
+    private let weightRange = 1...20
     
     init(size: CGSize, origin: CGPoint) {
-        self.init(height: Int(size.height / Global.layout.size.height), width: Int(size.width / Global.layout.size.width), origin: origin)
+        self.init(
+            height: Int(size.height / Global.layout.size.height),
+            width: Int(size.width / Global.layout.size.width),
+            origin: origin)
     }
     
     init(height: Int, width: Int, origin: CGPoint) {
         for i in 0...height {
             let offset = Int(i / 2)
             for j in -offset...(width - offset) {
-                let hex = Hex(q: j, r: i)
+                var hex = Hex(q: j, r: i)
+                hex.weight = Int.random(in: weightRange)
                 points.insert(hex)
             }
         }
     }
     
-    func getData(_ hex: Hex) -> Hex?{
+    func isHexExist(_ hex: Hex) -> Hex? {
         return points.first(where: { $0 == hex })
+    }
+    
+    func random() -> Hex? {
+        return points.randomElement()
     }
 }
 
