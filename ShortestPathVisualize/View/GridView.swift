@@ -11,10 +11,7 @@ import SwiftUI
 
 struct GridView: View {
     @ObservedObject var viewModel: GridViewModel
-    
-    init(_ vm: GridViewModel) {
-        viewModel = vm
-    }
+    @Binding var showGrid: Bool
     
     var body: some View {
         GeometryReader { geometry in
@@ -22,8 +19,8 @@ struct GridView: View {
                 MapView(
                     displayingData: self.$viewModel.hexes,
                     showWeight: self.$viewModel.showWeight,
-                    mapData: self.viewModel.gridData,
-                    backgroundGrid: true
+                    backgroundGrid: self.$showGrid,
+                    mapData: self.viewModel.gridData
                 )
                 
                 TapListenerView(tappedCallback: { point in

@@ -10,10 +10,11 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var viewModel = GridViewModel()
+    @State var showGrid: Bool = false
     
     var body: some View {
         ZStack(alignment: .top) {
-            GridView(self.viewModel)
+            GridView(viewModel: self.viewModel, showGrid: $showGrid)
                 .padding(.vertical, 50)
                 .padding(.horizontal, 20)
             makeControls()
@@ -34,6 +35,7 @@ struct ContentView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .frame(width: 200, height: 35, alignment: .trailing)
+                
                 Spacer()
                 
                 if self.viewModel.algo != .biDirectional {
@@ -48,8 +50,8 @@ struct ContentView: View {
             
             HStack {
                 Text("Speed")
-                Slider(value: self.$viewModel.speed)
-                    .frame(width: 180, height: 35, alignment: .trailing)
+                Slider(value: self.$viewModel.speed).frame(width: 180, height: 35, alignment: .trailing)
+                Toggle("Show Grid", isOn: $showGrid).frame(width: 140)
                 
                 if viewModel.algo != .biDirectional, viewModel.destinations.count != 2 {
                     Button {
@@ -64,6 +66,7 @@ struct ContentView: View {
                 }
                 
                 Spacer()
+                
                 if self.viewModel.destinations.count == 0 {
                     if self.viewModel.algo != .biDirectional {
                         Text("Tap any point on the screen / longpress and drag to draw wall")

@@ -11,16 +11,16 @@ import SwiftUI
 struct MapView: View {
     @Binding var displayingData: [HexDisplay]
     @Binding var showWeight: Bool
+    @Binding var backgroundGrid: Bool
     
     let mapData: Map
-    let backgroundGrid: Bool
 
     var body: some View {
         ZStack {
             if backgroundGrid {
                 EmptyHexagonMapView(gridData: Array(mapData.points.map { HexDisplay($0, color: .clear) }))
             }
-            HexagonMapView(displayData: $displayingData, showWeight: $showWeight)
+            HexagonMapView(displayData: $displayingData, showWeight: $showWeight, showBorder: $backgroundGrid)
         }
     }
 }
@@ -28,7 +28,9 @@ struct MapView: View {
 struct HexagonMapView: UIViewRepresentable {
     @Binding var displayData: [HexDisplay]
     @Binding var showWeight: Bool
+    @Binding var showBorder: Bool
     var filled: Bool = true
+    
 
     func makeUIView(context: Context) -> UIHexagonMapView {
         let view = UIHexagonMapView()
@@ -40,6 +42,7 @@ struct HexagonMapView: UIViewRepresentable {
         uiView.displayData = displayData
         uiView.showWeight = showWeight
         uiView.filled = filled
+        uiView.showBorder = showBorder
         uiView.setNeedsDisplay()
     }
 }
@@ -57,6 +60,7 @@ struct EmptyHexagonMapView: UIViewRepresentable {
         uiView.displayData = gridData
         uiView.showWeight = false
         uiView.filled = false
+        uiView.showBorder = true
         uiView.setNeedsDisplay()
     }
 }
@@ -65,6 +69,7 @@ class UIHexagonMapView: UIView {
     var displayData: [HexDisplay] = []
     var showWeight: Bool = false
     var filled: Bool = true
+    var showBorder: Bool = true
     
     let itemSize: CGSize = Global.layout.size
     
@@ -84,9 +89,11 @@ class UIHexagonMapView: UIView {
                 path.fill()
             }
             
-            Color.border.uiColor().setStroke()
-            path.lineWidth = 1
-            path.stroke()
+            if showBorder {
+                Color.border.uiColor().setStroke()
+                path.lineWidth = 0.5
+                path.stroke()
+            }
             
             if showWeight, hex.data.weight > 0 {
                 let position = CGPoint(

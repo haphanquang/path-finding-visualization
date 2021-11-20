@@ -34,9 +34,9 @@ class GridViewModel: ObservableObject {
     @Published var hexes = [HexDisplay]()
     @Published var pathSum: String = ""
     @Published var showWeight: Bool = false
-    @Published var speed: CGFloat = 0.7
+    @Published var speed: CGFloat = 0.5
     
-    private static let stepTime: CGFloat = 200
+    private static let stepTime: CGFloat = 150
     
     var stepDelay: DispatchTimeInterval = .milliseconds(Int(GridViewModel.stepTime))
     private var cancellables = Set<AnyCancellable>()
