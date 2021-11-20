@@ -1,5 +1,5 @@
 # Description:
-Some path finding algorithm visualization, implemented with Swift 5 and SwiftUI
+Visualization of some path finding algorithms, implemented by Swift 5 and SwiftUI
 
 # Demo Video
 https://www.youtube.com/watch?v=QA38KtqBpiA
