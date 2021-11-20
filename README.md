@@ -9,6 +9,6 @@ https://www.youtube.com/watch?v=QA38KtqBpiA
 - First tap to mark as start point
 - Second tap to mark as destination
 
-# Screenshots:
+# Screenshot:
 
 <img src="./Screenshots/dijkstra.png" width="1024" >
